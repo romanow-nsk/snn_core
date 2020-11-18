@@ -5,20 +5,15 @@
  */
 package romanow.snn_simulator.desktop;
 
+import com.sun.scenario.Settings;
 import romanow.snn_simulator.I_NeuronStep;
 import romanow.snn_simulator.I_NetParams;
 import romanow.snn_simulator.layer.NL_DigitalSource;
 import romanow.snn_simulator.neuron.N_BaseNeuron;
 import romanow.snn_simulator.GBL;
 import java.awt.FileDialog;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.sql.Time;
 import java.util.Date;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -129,7 +124,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         };
     private int count = 0;
-    private void toLog(String ss){
+    public void toLog(String ss){
         toLog(false,ss);
         }
     private void toLog(boolean high,String ss){
@@ -472,6 +467,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         jLabel19 = new javax.swing.JLabel();
         GPUmode = new javax.swing.JComboBox<>();
         jLabel20 = new javax.swing.JLabel();
+        PlayMPX = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         LoadModel = new javax.swing.JMenuItem();
@@ -841,6 +837,15 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getContentPane().add(jLabel20);
         jLabel20.setBounds(180, 170, 60, 20);
 
+        PlayMPX.setText("Старт mpx");
+        PlayMPX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlayMPXActionPerformed(evt);
+            }
+        });
+        getContentPane().add(PlayMPX);
+        PlayMPX.setBounds(10, 65, 130, 23);
+
         jMenu2.setText("Модель");
 
         LoadModel.setText("Загрузить");
@@ -1151,8 +1156,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getMenuState();
         saveSettings();
         }
-    
-    private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
+
+    private void runToPlay(Runnable code){
         saveCurrentViewState();
         synchronized (Pause){
             if (isRun){
@@ -1163,7 +1168,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 player.interruptPlay();
                 Pause.notifyAll();               // Если ждет поток (пауза)
                 return;
-                }
+            }
             Run.setText("Стоп");
             isRun=true;
             repeat=false;
@@ -1171,6 +1176,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             tt.setPriority(Thread.MIN_PRIORITY);
             tt.start();
             }
+        }
+
+
+    private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
+        runToPlay(play);
     }//GEN-LAST:event_RunActionPerformed
     private I_NeuronStep stepCB = new I_NeuronStep(){       // Шаг модели
         @Override
@@ -1278,7 +1288,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                             //---------- Задержа от плейера или вычисляемая
                             int delay=0;
                             FFTAudioSource ais = fft.getAudioInputStream();
-                            if (ais.isPlaying()){
+                            if (ais!=null && ais.isPlaying()){
                                 delay = (int)(totalMS-ais.getCurrentPlayTimeMS());
                                 if (delay<=0)
                                     toLog("Блок "+nBlock+" играет быстрее на "+(-delay));
@@ -1395,7 +1405,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             return;
             }
         FileDialog dlg=new FileDialog(this,"Звуковой файл",FileDialog.LOAD);
-        String ex = ((String)Samples.getSelectedItem()).equals("Файл") ? "wav" : "txt";
+        String ex = ((String)Samples.getSelectedItem()).equals("Файл") ? "wav" : "mpx";
         dlg.setFile("*."+ex);
         dlg.show();
         String ss1 = dlg.getDirectory();
@@ -1777,12 +1787,88 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     }//GEN-LAST:event_TextToWaveConvertActionPerformed
 
     private void ExportBinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBinActionPerformed
-        // TODO add your handling code here:
+        FFTAudioSource src = null;
+        src = sourceFactory.getSelected();
+        if (!(src instanceof FFTFileSource)){
+            toLog("Конвертация только для файлов\n");
+            return;
+            }
+        FFTFileSource file  =  (FFTFileSource)src;
+        boolean ff = file.testAndOpenFile(FFTAudioFile.OpenAndPlay, p_lastFileDir+p_lastFileName,FFT.sizeHZ, back);
+            file.enableToPlay(p_RealTime && p_Play);
+        if (!ff) {
+            toLog("Файл не открылся\n");
+            return;
+            }
+        fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc, p_LogFreq,p_SubToneCount,
+                needCohle(), p_GPU,p_FFTWindowReduce,p_GPUmode));
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    fft.FFTDirectBinSave(file,FFTView.this);
+                    } catch (IOException e) {
+                        toLog("Ошибка конвертации: "+e.toString());
+                }
+            }
+        }).start();
+
     }//GEN-LAST:event_ExportBinActionPerformed
 
     private void ExportJSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportJSONActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ExportJSONActionPerformed
+
+    private void PlayMPXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayMPXActionPerformed
+        String fname = getInputFileName("Играть MPX","mpx",null);
+        try {
+            fft.binLoad(fname);
+            p_Play=false;
+            runToPlay(new Runnable() {
+                @Override
+                public void run() {
+                    fft.fftDirect(back);
+                }
+            });
+            } catch (IOException e) {
+                toLog(e);
+                }
+    }//GEN-LAST:event_PlayMPXActionPerformed
+
+
+    public String getInputFileName(String title, final String defName, String defDir){
+        FileDialog dlg=new FileDialog(this,title,FileDialog.LOAD);
+        if (defDir!=null){
+            dlg.setDirectory(defDir);
+        }
+        if (defName.indexOf(".")==-1)
+            dlg.setFile("*."+defName);
+        else
+            dlg.setFile(defName);
+        dlg.show();
+        String fname=dlg.getDirectory();
+        if (fname==null) return null;
+        return fname+"/"+dlg.getFile();
+        }
+
+    public String getOutputFileName(String title, final String defName, String srcName){
+        FileDialog dlg=new FileDialog(this,title,FileDialog.SAVE);
+        dlg.setFile(srcName);
+        dlg.setFilenameFilter(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("."+defName);
+            }
+        });
+        dlg.show();
+        if (dlg.getDirectory()==null) return null;
+        String fname = dlg.getFile();
+        if (!fname.endsWith("."+defName))
+            fname+="."+defName;
+        return dlg.getDirectory()+"/"+fname;
+        }
+
+
 
     /**
      * @param args the command line arguments
@@ -1855,6 +1941,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JTextField NSynapses;
     private javax.swing.JComboBox NeuronId;
     private javax.swing.JButton Pause;
+    private javax.swing.JButton PlayMPX;
     private javax.swing.JMenuItem PreloadClear;
     private javax.swing.JMenuItem PreloadCohleogram;
     private javax.swing.JMenuItem PreloadSpector;

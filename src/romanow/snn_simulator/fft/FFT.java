@@ -1,9 +1,10 @@
 package romanow.snn_simulator.fft;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+
+import romanow.snn_simulator.desktop.FFTView;
 import romanow.snn_simulator.gammatone.GTFilterBank;
 import romanow.snn_simulator.gammatone.GTFilterOriginal;
 import org.apache.commons.math3.complex.Complex;
@@ -38,31 +39,31 @@ public class FFT implements FFTBinStream{
     //private int procOver=0;                        // Процент перекрытия окна за шаг
     //private boolean logFreqMode=false;
     //private boolean p_Cohleogram=false;
-    //private int subToneCount=4;                  // Дискретность - 1/8 тона (1/4 полутона)
-    public final static int formatVersion=1;       // Версия формата
+    //private int subToneCount=4;                   // Дискретность - 1/8 тона (1/4 полутона)
+    public final static int formatVersion=1;        // Версия формата
     public final static String formatSignature="CASA Spectrums Binary Data";
-    public final static int sizeHZ = 44100;        // Частотный диапазон оцифровки
-    public final static float Ccontr = 33;         // Частота до контр-октавы
-    public final static int Octaves = 10;          // Кол-во октав
-    public final static int  Size0= 1024;          // 1024 базовая степень FFT
+    public final static int sizeHZ = 44100;         // Частотный диапазон оцифровки
+    public final static float Ccontr = 33;          // Частота до контр-октавы
+    public final static int Octaves = 10;           // Кол-во октав
+    public final static int  Size0= 1024;           // 1024 базовая степень FFT
     private int currentFormatVersion=0;
-    private float stepHZLinear;                    // Дискретность частоты
-    private float totalMS=0;                       // Текущий момент времени    
-    private float stepMS;                          // Шаг оцифровки спектра
-    private float countGTF;                        // Шагов гамматон-фильтра
-    private float compressGrade=0;
+    private float stepHZLinear;                     // Шаг лин.спектра
+    private float totalMS=0;                        // Текущий момент времени
+    private float stepMS;                           // Сдвиг окна (мс)
+    private float countGTF;                         // Шагов гамматон-фильтра
+    private float compressGrade=0;                  // Степень компрессии
     private boolean compressMode=false;
-    private float kAmpl=1;
+    private float kAmpl=1;                          // Ампл. компрессии
     private GPU gpu=null;
     private FFTParams pars = null;
+    private boolean preloadMode=false;              // Режим предварительной загрузки
     //------------ текущие спектры и волны -------------------------------------
+    private int nblock=0;                           // Индекс спектра (шаг модели)
     private float wave[]=null;                     // Текущая волна
     private FFTArray spectrum=null;                // Текущий спектр
     private FFTArray logSpectrum=null;             // Спектр октавный (логарифмический диапазон)
     private FFTArray gammaTones=null;              // Кохлеаграмма =ПОКА 1 значение
     private FFTArray GTSpectrum=null;
-    private boolean preloadMode=false;              // Режим предварительной загрузки
-    private int nblock=0;                           // Индекс спектра (шаг модели)
     private FFTArray GTSpectrumList[]=null;         // preload кохлеограмма
     private FFTArray logSpectrumList[]=null;        // preload спектр
     private float fullWave[]=null;                  // preload волна
@@ -74,7 +75,11 @@ public class FFT implements FFTBinStream{
     private FFTAudioSource audioInputStream=null;
     private FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
     private final static String noteList[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
-    
+    public String toString(){
+        return pars.toString()+"\nШаг лин.спектра (гц)="+stepHZLinear+"\nСдвиг окна (мс)="+stepMS+
+                "\nКомпрессия="+compressMode+"\nСтепень компрессии="+compressGrade+"\nАмпл. компрессии="+kAmpl+
+                "\nГраничная нота="+getFirstValidNote()+"\nОтсчетов="+nblock+"\nВремя (мс)="+totalMS;
+        }
     public static int pow2(int v){
         return 1<<v;
         }
@@ -340,6 +345,8 @@ public class FFT implements FFTBinStream{
     //--------------------------------------------------------------------------
     private TimeCounter tc = 
         new TimeCounter(new String[]{"Чтение","БПФ","Компрессия","log-шкала","Гамматон","Модель","Визуализация","Общее"});
+    public TimeCounter getTimeCounter() {
+        return tc; }
     public void addCount(int idx){
         tc.addCount(idx);
         }
@@ -645,9 +652,144 @@ public class FFT implements FFTBinStream{
             out[i]=(float)in[i];
         return out;
         }
+
+    public void FFTDirectBinSave(FFTFileSource src, FFTView view) throws IOException{
+        System.out.println(this);
+        String fspec = src.getFileSpec();
+        int idx = fspec.lastIndexOf(".");
+        if (idx==-1){
+            throw new IOException("Спецификация файла: "+fspec);
+            }
+        fspec = fspec.substring(0,idx)+".mpx";
+        final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
+        final ArrayList<float[]> spectors = new ArrayList<>();
+        final ArrayList<float[]> cohles = new ArrayList<>();
+        save(out);
+        FFTCallBack back = new FFTCallBack(){
+            @Override
+            public void onStart(float msOnStep) { System.out.println("Стартанул"); }
+            @Override
+            public void onFinish() {
+                System.out.println("Закончил");
+            }
+            @Override
+            public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
+                if (nBlock%100==0)
+                    onMessage("Отсчетов: "+nBlock);
+                spectors.add(getLogSpectrum());
+                if (pars.p_Cohleogram())
+                    cohles.add(getGTSpectrum());
+                return true;
+                }
+            @Override
+            public void onError(String mes) {
+                view.toLog(mes);
+            }
+            @Override
+            public void onMessage(String mes) { view.toLog(mes); }
+            };
+        fftDirect(src,back);
+        out.writeFloat(totalMS);
+        out.writeInt(spectors.size());          // Кол-во отсчетов
+        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        DataOutputStream dtmp = new DataOutputStream(tmp);
+        for(float zz[] : spectors)
+            for(float ff : zz)
+                dtmp.writeFloat(ff);
+        out.write(tmp.toByteArray());
+        tmp.close();
+        dtmp.close();
+        if (pars.p_Cohleogram()){
+            tmp = new ByteArrayOutputStream();
+            dtmp = new DataOutputStream(tmp);
+            for(float zz[] : cohles)
+                for(float ff : zz)
+                    dtmp.writeFloat(ff);
+            out.write(tmp.toByteArray());
+            tmp.close();
+            dtmp.close();
+            }
+        out.flush();
+        out.close();
+        }
+
+    public void binLoad(String fspec) throws IOException {
+        DataInputStream in = new DataInputStream(new FileInputStream(fspec));
+        load(in,0);
+        in.close();
+        }
+
+    @Override
+    public void load(DataInputStream in, int formatVersion) throws IOException {
+        try {
+            String sign = in.readUTF();
+            if (!sign.equals(formatSignature))
+                throw new IOException("Формат файла - несовпадение сигнатуры");
+            } catch (Exception ex){
+                throw new IOException("Формат файла - ошибка чтения сигнатуры");
+                }
+        currentFormatVersion = in.readInt();
+        pars = new FFTParams();
+        pars.load(in,currentFormatVersion);
+        stepHZLinear = in.readFloat();                    // Дискретность частоты
+        stepMS = in.readFloat();                          // Шаг оцифровки спектра
+        compressGrade = in.readFloat();
+        compressMode = in.readBoolean();
+        kAmpl = in.readFloat();
+        pars = new FFTParams();
+        pars.load(in,currentFormatVersion);
+        toneIndexes = new int [in.readInt()];
+        int vSize = toneIndexes.length;
+        for(int i=0;i<toneIndexes.length;i++)
+            toneIndexes[i]=in.readInt();
+        preloadMode = true;
+        totalMS = in.readFloat();
+        nblock = in.readInt();
+        byte bb[]=new byte[nblock*vSize*4];     // Читать в буфер
+        in.read(bb);
+        DataInputStream bin = new DataInputStream(new ByteArrayInputStream(bb));
+        logSpectrumList = new FFTArray[nblock];
+        for(int i=0;i<nblock;i++){
+            FFTArray vv = new FFTArray(vSize);
+            for(int j=0;j<vSize;j++)
+                vv.set(i,bin.readFloat());
+            logSpectrumList[i]=vv;
+            }
+        if (pars.p_Cohleogram()){
+            in.read(bb);
+            bin = new DataInputStream(new ByteArrayInputStream(bb));
+            GTSpectrumList = new FFTArray[nblock];
+            for(int i=0;i<nblock;i++){
+                FFTArray vv = new FFTArray(vSize);
+                for(int j=0;j<vSize;j++)
+                    vv.set(i,bin.readFloat());
+                GTSpectrumList[i]=vv;
+                }
+            }
+        }
+
+    @Override
+    public void save(DataOutputStream out) throws IOException {
+        out.writeUTF(formatSignature);
+        out.writeInt(formatVersion);
+        pars.save(out);
+        out.writeFloat(stepHZLinear);                    // Дискретность частоты
+        out.writeFloat(stepMS);                        // Шаг оцифровки спектра
+        out.writeFloat(compressGrade);
+        out.writeBoolean(compressMode);
+        out.writeFloat(kAmpl);
+        pars.save(out);
+        out.writeInt(toneIndexes.length);
+        for(int vv: toneIndexes)
+            out.writeInt(vv);
+    }
+    //--------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    public static void main(String argv[]){
+    public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
+        fft.binLoad("../Waves/BluesMono.mpx");
+        System.out.println(fft.toString());
+        /*
         FFTAudioFile file = new FFTAudioFile();
         FFTCallBack back = new FFTCallBack(){
             @Override
@@ -660,14 +802,6 @@ public class FFT implements FFTBinStream{
                 }
             @Override
             public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
-                //float vv[]=fft.getWave();
-                //for(int i=0;i<vv.length;i++)
-                //    System.out.print(" "+vv[i]);
-                //System.out.println();
-                //vv=fft.getSpectrum();
-                //for(int i=0;i<vv.length;i++)
-                //    System.out.print(" "+vv[i]);
-                //System.out.println();
                 float vv[]=fft.getLogSpectrum();
                 System.out.println("Блок " + nBlock+" Спектр= "+vv.length+" Время (мс)="+totalMS);
                 for(int i=0;i<vv.length;i++)
@@ -686,26 +820,8 @@ public class FFT implements FFTBinStream{
             };
         file.testAndOpenFile(FFTAudioFile.Open,"../Waves/BluesMono.wav", 44100, back);
         fft.setFFTParams(new FFTParams(1024, 0, false,2,false,false,false,0));
-        fft.fftDirect(file,back); 
-        }
-
-    @Override
-    public void load(DataInputStream in, int formatVersion) throws IOException {
-        try {
-            String sign = in.readUTF();
-            if (!sign.equals(formatSignature))
-                throw new IOException("Формат файла - несовпадение сигнатуры");
-            } catch (Exception ex){
-                throw new IOException("Формат файла - ошибка чтения сигнатуры");
-                }
-            currentFormatVersion = in.readInt();
-        pars = new FFTParams();
+        fft.fftDirect(file,back);
+         */
     }
 
-    @Override
-    public void save(DataOutputStream out) throws IOException {
-        out.writeUTF(formatSignature);
-        out.writeInt(formatVersion);
-        pars.save(out);
-    }
 }

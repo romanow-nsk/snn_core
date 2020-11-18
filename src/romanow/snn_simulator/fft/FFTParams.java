@@ -18,7 +18,7 @@ public class FFTParams implements FFTBinStream{
     private boolean FFTWindowReduce;       // Укорочение интервалов для высоких частот по октавам
     private int W;                         // Ширина окна (отсчетов)
     private int procOver;                  // Процент перекрытия двух соседних окон
-    private boolean logFreqMode;                 // октавный режим (true)
+    private boolean logFreqMode;           // Октавный режим (true)
     private int subToneCount;              // Частот в полутоне
     private boolean p_Cohleogram;          // Наличие кохлеограммы
     private boolean p_GPU;                 // GPU включен
@@ -34,10 +34,22 @@ public class FFTParams implements FFTBinStream{
         this.p_Cohleogram = p_Cohleogram;
         this.p_GPU = p_GPU;
         }
+    public String toString(){
+        return "Укорочение интервалов ВЧ="+FFTWindowReduce+"\nШирина окна="+W+
+                "\nПроцент перекрытия="+procOver+"\nОктавный режим="+logFreqMode+"\nЧастот в полутоне="+subToneCount+
+                "\nНаличие кохлеограммы="+p_Cohleogram;
+        }
     public FFTParams(){}
     @Override
     public void load(DataInputStream in, int formatVersion) throws IOException {
-
+        GPUmode=in.readInt();
+        FFTWindowReduce=in.readBoolean();
+        W=in.readInt();
+        procOver=in.readInt();
+        logFreqMode=in.readBoolean();
+        subToneCount=in.readInt();
+        p_Cohleogram=in.readBoolean();
+        p_GPU=in.readBoolean();
         }
 
     @Override

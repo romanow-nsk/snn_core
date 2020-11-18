@@ -10,5 +10,6 @@ package romanow.snn_simulator.fft;
  * @author romanow
  */
 public interface FFTFileSource extends FFTAudioSource{      // маркерный интерфейс
-    public boolean testAndOpenFile(int mode, String PatnToFile, int sizeHZ, FFTCallBack back);    
+    public boolean testAndOpenFile(int mode, String PatnToFile, int sizeHZ, FFTCallBack back);
+    public String getFileSpec();
 }

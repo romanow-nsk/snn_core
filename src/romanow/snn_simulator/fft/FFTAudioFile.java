@@ -14,6 +14,7 @@ import javax.sound.sampled.*;
  * @author romanow
  */
 public class FFTAudioFile implements FFTFileSource{
+    private String fspec=null;
     private AudioInputStream audioInputStream=null;
     private AudioFormat format=null;
     private Clip clip=null;
@@ -55,6 +56,7 @@ public class FFTAudioFile implements FFTFileSource{
     public final static int OpenAndPlay=2;
     @Override
     public boolean testAndOpenFile(int mode, String PatnToFile,int sizeHZ, FFTCallBack back){
+        fspec=null;
         File AudioFile = new File(PatnToFile);
         try {
             audioInputStream = AudioSystem.getAudioInputStream(AudioFile);
@@ -83,8 +85,15 @@ public class FFTAudioFile implements FFTFileSource{
                     return false;
                     }
             }
+        fspec = PatnToFile;
         return true;
-        }    
+        }
+
+    @Override
+    public String getFileSpec() {
+        return fspec;
+        }
+
     @Override
     public String testSource(int sizeHZ) {
         format = audioInputStream.getFormat();

@@ -18,6 +18,7 @@ import javax.sound.sampled.AudioSystem;
  * @author romanow
  */
 public class FFTAudioTextFile implements FFTFileSource{
+    private String fspec=null;
     private BufferedReader AudioFile=null;
     private int sz=0;
     private float data[]=null;
@@ -56,6 +57,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             }
         }       
     public boolean convertToWave(String PatnToFile,FFTCallBack back){
+        fspec=null;
         try {
             AudioFile = new BufferedReader(new FileReader(PatnToFile));
             } catch (FileNotFoundException ex) {
@@ -118,6 +120,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             wav_file.flush();
             wav_file.close();
             back.onMessage("Записано "+num_samples+" сэмплов, "+ ((float)num_samples)/sample_rate+ " сек");
+            fspec = PatnToFile;
             return true;
             } catch(Exception ee){
                 back.onError(ee.getMessage());
@@ -161,7 +164,13 @@ public class FFTAudioTextFile implements FFTFileSource{
                 close();
                 return false;
                 }
-        }        
+        }
+
+    @Override
+    public String getFileSpec() {
+        return fspec;
+        }
+
     @Override
     public String testSource(int sizeHZ) {
         // Формат не проверяется
