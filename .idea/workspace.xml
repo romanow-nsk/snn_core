@@ -1,253 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="fix0 on Git">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/snn_core_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/libs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aparapi.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aparapi_x86.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/aparapi.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/commons-math3-3.6.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/guava-11.0.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/javassist-3.16.1-GA.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/kxml2-2.3.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/reflections-0.9.5.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/slf4j-api-1.6.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/slf4j-simple-1.6.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/xstream-1.4.9.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manifest.mf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/build-impl.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/configs/AudioFFT.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/configs/Image2D.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/configs/desktop2d.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/genfiles.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/private/private.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/private/private.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/project.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nbproject/project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/snn_core.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/add.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/add2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/archive.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/calc.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/calendar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/calendar_clear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/clear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/date.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/date_clear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/document-export.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/document-import.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/down.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/download.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/exit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/firefox.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/ic_action_search.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/ic_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/info.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/left.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/list.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/load.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/local.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/login.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/media-play-back.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/media-play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/message.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/network.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/newitem.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/pdf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/quality.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/question.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/refresh.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/remote.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/remove.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/remove2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/right.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/settings.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/status_gray.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/status_green.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/status_red.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/status_yellow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/summ32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/synch.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/table.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/up.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/updown.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drawable-mdpi/who.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/powerline/FAPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/powerline/FFT100.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/powerline/FTPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/powerline/desktop.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/powerline/desktop.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/GBL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_BinaryStream.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_Layer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_LayerModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_Name.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_NamedFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_NetParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_Neuron.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_NeuronLayer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_NeuronOutput.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_NeuronStep.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_ObjectName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_RegularConnector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_Spike.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_TextStream.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/I_TypeName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/Token.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/TypeFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/UniExcept.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/UniException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/FunCmp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/FunDo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/FunLike.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/FunTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/Object2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/Object3D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/ObjectId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/VectorId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/VectorLinkedId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/data/VectorX.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/BoxFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTLayerWindow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FileImage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/HistoFrame.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/HistoFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/HorizontalLine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/IImage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/I_SpectrumWindow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/ImageBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LayerWindow.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LayerWindow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LayerWindowCallBack.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LineGraphicFrame.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LineGraphicFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/NeuronLayerPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/NeuronLayerWindow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/NoImage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/Static.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/VerticalLine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/YesNoDialog.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/YesNoDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/YesNoListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/model2D.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/model2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/AudioSourceFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioFile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTCallBack.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTFileSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTHarmonic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTHarmonicQuickTime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTHarmonicShortTime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTSelf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTSinus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTSinusA4.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTSpectorFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/GPU.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/OutputDataPlayer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/TimeCounter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/gammatone/GPUFiltersKernel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/gammatone/GPUGTFilterBank.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/gammatone/GTFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/gammatone/GTFilterBank.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/gammatone/GTFilterOriginal.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Input.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Layer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Link.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/ModelCreator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/ModelDescript.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/NLM_Constructive.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Name.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/NeuronLayer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Output.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Param.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/Statistic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/lang/XMLParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/BeeMax.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/BeeMaxGPUKernel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/BeeMaxParams.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_BeeMax.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_BeeMaxBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_BeeMaxFull.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_BeeMaxFullBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_BeeMaxGPUBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_Catch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_DigitalSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_GPUTestSin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_Integrate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_IntegrateBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_LocalMaxes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_NeuronLayer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_OctaveConnector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_Perform.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_PerformBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_PerformGPU.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_PerformGPUBuffered.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_Smooth.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/NL_TwoOctaves.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/ModelFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_Base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_Birds.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_Gavrilov.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_Proxy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_Simple.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_TestCompiled.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/model/NLM_TwoLevelModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/CBLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/CBNet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/CBNetState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/CBNeuron.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/FaceNet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDCatch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDNet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDNetImage2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDNeuron.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDNeuron2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/net/MDSynapse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_BandAndBurst.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_BaseNeuron.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_BroadBand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_BroadBand2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Classic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Contrast.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_DigitalSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_FreqUp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Gavrilov.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Level.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_NarrowBand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Random.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Repeater.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Rodenko.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_SingleCatch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_SingleSynapsed.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_SingleWCatch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Smooth.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Stable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_StableFor0.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_TimeStable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/N_Vowal.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/neuron/NeuronFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/statistic/Histogramm.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/statistic/StatCell.java" afterDir="false" />
+    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTBinStream.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTParams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTParams.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -256,6 +16,14 @@
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -347,6 +115,14 @@
       <option name="presentableId" value="Default" />
       <updated>1601827592996</updated>
     </task>
+    <task id="LOCAL-00001" summary="fix0 on Git">
+      <created>1605675437830</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1605675437830</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -354,18 +130,22 @@
     <option name="LAST_COMMIT_MESSAGE" value="fix0 on Git" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1605680476360">
+      <screen x="0" y="0" width="1600" height="870" />
+    </state>
+    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1605680476360" />
     <state x="530" y="224" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1601827951414">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="530" y="224" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1600.870@0.0.1600.870" timestamp="1601827951414" />
-    <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1605632436978">
+    <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1605678593597">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1600.870@0.0.1600.870" timestamp="1605632436978" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1605675148685">
+    <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1600.870@0.0.1600.870" timestamp="1605678593597" />
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1605675433704">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1605675148685" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1605675433704" />
     <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1605675168961">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -406,21 +186,14 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="280" y="12" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1601828718417" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1605675471791">
+      <screen x="0" y="0" width="1600" height="870" />
+    </state>
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1605675471791" />
     <state x="641" y="171" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1605675088722">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="641" y="171" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.0.1600.870@0.0.1600.870" timestamp="1605675088722" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java</url>
-          <line>353</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="hg4idea.settings">
     <option name="CHECK_INCOMING_OUTGOING" value="true" />

@@ -89,11 +89,11 @@ public class BeeMaxGPUKernel {
                 }
             }
         };
-        if (pp.pars.GPUmode==0)
+        if (pp.pars.GPUmode()==0)
             kernel.setExecutionMode(Kernel.EXECUTION_MODE.GPU);
-        if (pp.pars.GPUmode==1)
+        if (pp.pars.GPUmode()==1)
             kernel.setExecutionMode(Kernel.EXECUTION_MODE.CPU);
-        if (pp.pars.GPUmode==2)
+        if (pp.pars.GPUmode()==2)
             kernel.setExecutionMode(Kernel.EXECUTION_MODE.JTP);
         long tt = System.currentTimeMillis();
         kernel.execute(Range.create(idx0.length));      // ПО КОЛИЧЕСТВУ ПЧЕЛ

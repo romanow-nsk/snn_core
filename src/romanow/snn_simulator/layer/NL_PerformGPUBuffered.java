@@ -59,11 +59,11 @@ public class NL_PerformGPUBuffered extends NL_IntegrateBuffered{
                 }
                 }
             };
-            if (pars.GPUmode==0)
+            if (pars.GPUmode()==0)
                 kernel.setExecutionMode(Kernel.EXECUTION_MODE.GPU);
-            if (pars.GPUmode==1)
+            if (pars.GPUmode()==1)
                 kernel.setExecutionMode(Kernel.EXECUTION_MODE.CPU);
-            if (pars.GPUmode==2)
+            if (pars.GPUmode()==2)
                 kernel.setExecutionMode(Kernel.EXECUTION_MODE.JTP);
 //            }
         tt = System.currentTimeMillis(); 

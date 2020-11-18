@@ -1,5 +1,7 @@
 package romanow.snn_simulator.fft;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import romanow.snn_simulator.gammatone.GTFilterBank;
@@ -11,7 +13,7 @@ import org.apache.commons.math3.transform.TransformType;
 import romanow.snn_simulator.gammatone.GPUFiltersKernel;
 import romanow.snn_simulator.gammatone.GPUGTFilterBank;
  
-public class FFT {
+public class FFT implements FFTBinStream{
     //------------- СТАТИЧЕСКАЯ ЧАСТЬ
     private static float expValues[]=null;         // Подчитаниие заранее значения экспоненты
     private static float dExp=0.01F;                // Шаг экспоненты
@@ -36,11 +38,14 @@ public class FFT {
     //private int procOver=0;                        // Процент перекрытия окна за шаг
     //private boolean logFreqMode=false;
     //private boolean p_Cohleogram=false;
-    //private int subToneCount=4;                     // Дискретность - 1/8 тона (1/4 полутона)
+    //private int subToneCount=4;                  // Дискретность - 1/8 тона (1/4 полутона)
+    public final static int formatVersion=1;       // Версия формата
+    public final static String formatSignature="CASA Spectrums Binary Data";
     public final static int sizeHZ = 44100;        // Частотный диапазон оцифровки
     public final static float Ccontr = 33;         // Частота до контр-октавы
     public final static int Octaves = 10;          // Кол-во октав
     public final static int  Size0= 1024;          // 1024 базовая степень FFT
+    private int currentFormatVersion=0;
     private float stepHZLinear;                    // Дискретность частоты
     private float totalMS=0;                       // Текущий момент времени    
     private float stepMS;                          // Шаг оцифровки спектра
@@ -80,7 +85,7 @@ public class FFT {
             if (toneIndexes[i]==toneIndexes[i-1])
                 lastEqIdx=i;
             }
-        return getNoteNameByIndex(lastEqIdx/pars.subToneCount);
+        return getNoteNameByIndex(lastEqIdx/pars.subToneCount());
         }
     public static String getShortNoteNameByIndex(int idx){
         String out=noteList[idx%12];
@@ -109,7 +114,7 @@ public class FFT {
         GTSpectrumList = null;
         }
     public boolean isPreload(){
-        return logSpectrumList!=null && (!pars.p_Cohleogram || GTSpectrumList!=null);
+        return logSpectrumList!=null && (!pars.p_Cohleogram() || GTSpectrumList!=null);
         }
     public int getGTFilterSize(){
         return filterBank.size();
@@ -139,7 +144,7 @@ public class FFT {
         return stepMS;
         }
     public int getSubToneCount() {
-        return pars.subToneCount;
+        return pars.subToneCount();
         }
     public void close(){
         close(null);
@@ -160,10 +165,10 @@ public class FFT {
         return stepHZLinear;
         }
     public boolean isLogFreqMode() {
-        return pars.logFreqMode;
+        return pars.logFreqMode();
         }
     public void setLogFreqMode(boolean mode) {
-        pars.logFreqMode = mode;
+        pars.setLogFreqMode(mode);
         }
     public FFTParams getParams(){
         return pars;
@@ -194,7 +199,7 @@ public class FFT {
     public void setFFTParams(FFTParams pars){
         this.pars = pars;
         calcFFTParams();
-        gpu = new GPU(pars.p_GPU);
+        gpu = new GPU(pars.p_GPU());
         gpu.printGPUInfo();
         }
     public String fullGPUInfo(){
@@ -216,12 +221,12 @@ public class FFT {
         }
     */
     public int getLogSpectrumSize(){
-        return Octaves*12*pars.subToneCount;
+        return Octaves*12*pars.subToneCount();
         }
     public void calcFFTParams(){
-        stepHZLinear = ((float)sizeHZ)/pars.W;
-        stepMS = 10*pars.W*(100-pars.procOver)/sizeHZ;
-        countGTF =  pars.W*(100-pars.procOver)/100;
+        stepHZLinear = ((float)sizeHZ)/pars.W();
+        stepMS = 10*pars.W()*(100-pars.procOver())/sizeHZ;
+        countGTF =  pars.W()*(100-pars.procOver())/100;
         totalMS=0;
         filterBank = new GTFilterBank();
         createSubToneIndexes();
@@ -229,7 +234,7 @@ public class FFT {
         }
     private void createSubToneIndexes(){
         float c0 = Ccontr;
-        int octSize = 12*pars.subToneCount;
+        int octSize = 12*pars.subToneCount();
         int out[]=new int[Octaves*octSize];
         int k=0;
         for(int i=0;i<10;i++,c0*=2){
@@ -273,7 +278,7 @@ public class FFT {
     public void preloadFullCohleogramm(FFTAudioSource audioInputStream, FFTCallBack back){
         if (!preloadWave(audioInputStream,back))
             return;
-        int nQuant = pars.W*(100-pars.procOver)/100;
+        int nQuant = pars.W()*(100-pars.procOver())/100;
         int sz = fullWave.length/nQuant;
         int dd=sz/20;
         if (fullWave.length%nQuant !=0 ) sz++;
@@ -282,17 +287,17 @@ public class FFT {
         back.onMessage("Отсчетов кохлеограммы:"+sz);
         if (gpu.devicePresent()){
             GPUFiltersKernel gpuFilter = new GPUFiltersKernel();
-            GTSpectrumList = gpuFilter.execute(filterBank.getFilterBank(),fullWave,nQuant,sz,pars.GPUmode);
+            GTSpectrumList = gpuFilter.execute(filterBank.getFilterBank(),fullWave,nQuant,sz,pars.GPUmode());
             for(int i=0;i<sz;i++)
                 GTSpectrumList[i].compress(compressMode, compressGrade,kAmpl);
             }
         else{
-            wave = new float[pars.W];
+            wave = new float[pars.W()];
             for(int i=0, base=0; i<sz; i++, base+=nQuant){
-                for(int j=0;j<pars.W;j++){
+                for(int j=0;j<pars.W();j++){
                     wave[j] = base+j<fullWave.length ? fullWave[base+j] : 0;
                     }
-                filterBank.procCohleogramm(wave, pars.procOver,gpu);
+                filterBank.procCohleogramm(wave, pars.procOver(),gpu);
                 GTSpectrum  = filterBank.getGTSpectrum();
                 GTSpectrum.compress(compressMode, compressGrade,kAmpl);
                 GTSpectrumList[i] = GTSpectrum;
@@ -307,21 +312,21 @@ public class FFT {
     public void preloadFullSpectrum(FFTAudioSource audioInputStream, FFTCallBack back){
         if (!preloadWave(audioInputStream,back))
             return;
-        int nQuant = pars.W*(100-pars.procOver)/100;
+        int nQuant = pars.W()*(100-pars.procOver())/100;
         int sz = fullWave.length/nQuant;
         if (fullWave.length%nQuant !=0 ) sz++;
         logSpectrumList = new FFTArray[sz];
-        wave = new float[pars.W];        
+        wave = new float[pars.W()];
         back.onMessage("Отсчетов спектра:"+sz);
         TimeCounter tc = new TimeCounter("Конвертация спектра");
         int dd = sz/20;
         for(int i=0, base=0; i<logSpectrumList.length; i++, base+=nQuant){
             spectrum = new FFTArray(wave.length);
             logSpectrum=new FFTArray(toneIndexes.length);
-            for(int j=0;j<pars.W;j++){
+            for(int j=0;j<pars.W();j++){
                 wave[j] = base+j<fullWave.length ? fullWave[base+j] : 0;
                 }
-            fftDirectStandart(pars.FFTWindowReduce); // Переменный (фикс.) размер окна
+            fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
             spectrum.compress(compressMode,compressGrade,kAmpl);
             convertToLog(true);                 // Линейный/триангулярный
             //spectrum.nextStep();                // ?????????
@@ -345,12 +350,12 @@ public class FFT {
         preloadMode=false;
         tc.clear();
         back.onStart(stepMS);
-        wave = new float[pars.W];
+        wave = new float[pars.W()];
         spectrum = new FFTArray(wave.length);
         logSpectrum=new FFTArray(toneIndexes.length);
         nblock=0;
         int size = fullWave.length;
-        int nQuant = pars.W*(100-pars.procOver)/100;
+        int nQuant = pars.W()*(100-pars.procOver())/100;
         try {
             int read=0;
             int i=0;
@@ -359,20 +364,20 @@ public class FFT {
             tc.clear();
             do  {
                 tc.fixTime();
-                for(int j=0;j<pars.W;j++){
+                for(int j=0;j<pars.W();j++){
                     wave[j] = j<size ? fullWave[base+j] : 0;
                     }
                 base += nQuant;
                 size -= nQuant;
                 tc.addCount(0);
-                fftDirectStandart(pars.FFTWindowReduce); // Переменный (фикс.) размер окна
+                fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
                 tc.addCount(1);
                 spectrum.compress(compressMode,compressGrade,kAmpl);
                 tc.addCount(2);
                 convertToLog(true);                 // Линейный/триангулярный
                 tc.addCount(3);
-                if (pars.p_Cohleogram){
-                    filterBank.procCohleogramm(wave, pars.procOver,gpu);
+                if (pars.p_Cohleogram()){
+                    filterBank.procCohleogramm(wave, pars.procOver(),gpu);
                     GTSpectrum  = filterBank.getGTSpectrum();
                     tc.addCount(4);
                     GTSpectrum.compress(compressMode, compressGrade,kAmpl);
@@ -414,7 +419,7 @@ public class FFT {
                 tc.addCount(3);
                 tc.addCount(4);
                 logSpectrum = logSpectrumList[nblocks];
-                if (pars.p_Cohleogram)
+                if (pars.p_Cohleogram())
                     GTSpectrum = GTSpectrumList[nblocks];
                 //spectrum.nextStep();
                 //GTSpectrum.nextStep();
@@ -511,7 +516,7 @@ public class FFT {
     // Частота вызова на каждой октаве уменьшается (таблица коэффициентов)
     public void createFilterBank(){
         filterBank = new GTFilterBank();
-        filterBank.createGTFilterBank(pars.subToneCount);        
+        filterBank.createGTFilterBank(pars.subToneCount());
         GTSpectrum = new FFTArray(filterBank.size());
         }
     public float []getGammatoneStatic(int note){       // Это ИСХОДНИК !!!!!!!
@@ -526,7 +531,7 @@ public class FFT {
         return FFT.convert(out);
         }
     public float []getGammatone(int note,boolean env){ // Для одного тона
-        return  filterBank.getGammatone(wave, pars.procOver, note, env);
+        return  filterBank.getGammatone(wave, pars.procOver(), note, env);
         }
 
     private float F_SCALE = 3f;
@@ -551,7 +556,7 @@ public class FFT {
         gammaTones = new FFTArray(toneIndexes.length);
         float tmp[] = new float[wave.length];
         float c0 = Ccontr;
-        int octSize = 12*pars.subToneCount;
+        int octSize = 12*pars.subToneCount();
         int out[]=new int[Octaves*octSize];
         int k=0;
         for(int i=0;i<10;i++,c0*=2){
@@ -591,7 +596,7 @@ public class FFT {
         int pow = 1;                        // ПО ОКТАВАМ
         int oct=2;                          // Частота, с которой копируется спектр
         int base=0;
-        int nextBase = toneIndexes[pars.subToneCount*12*oct];
+        int nextBase = toneIndexes[pars.subToneCount()*12*oct];
        	float radice = (float)(1 / Math.sqrt(tmp.length));
         while(tmp.length>=2018){            // 
             Complex xx[] = fft.transform(convert(tmp),TransformType.FORWARD);
@@ -682,5 +687,25 @@ public class FFT {
         file.testAndOpenFile(FFTAudioFile.Open,"../Waves/BluesMono.wav", 44100, back);
         fft.setFFTParams(new FFTParams(1024, 0, false,2,false,false,false,0));
         fft.fftDirect(file,back); 
-        } 
+        }
+
+    @Override
+    public void load(DataInputStream in, int formatVersion) throws IOException {
+        try {
+            String sign = in.readUTF();
+            if (!sign.equals(formatSignature))
+                throw new IOException("Формат файла - несовпадение сигнатуры");
+            } catch (Exception ex){
+                throw new IOException("Формат файла - ошибка чтения сигнатуры");
+                }
+            currentFormatVersion = in.readInt();
+        pars = new FFTParams();
+    }
+
+    @Override
+    public void save(DataOutputStream out) throws IOException {
+        out.writeUTF(formatSignature);
+        out.writeInt(formatVersion);
+        pars.save(out);
+    }
 }

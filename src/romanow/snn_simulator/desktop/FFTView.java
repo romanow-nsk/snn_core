@@ -423,7 +423,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         GammaLabel = new javax.swing.JLabel();
         M5 = new javax.swing.JTextField();
         FileName = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        File = new javax.swing.JButton();
         LCompress = new javax.swing.JLabel();
         Samples = new javax.swing.JComboBox();
         Time = new javax.swing.JTextField();
@@ -557,14 +557,14 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getContentPane().add(FileName);
         FileName.setBounds(80, 120, 200, 25);
 
-        jButton1.setText("Файл");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        File.setText("Файл");
+        File.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                FileActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1);
-        jButton1.setBounds(10, 120, 59, 23);
+        getContentPane().add(File);
+        File.setBounds(10, 120, 59, 23);
 
         LCompress.setText("Компрессия");
         getContentPane().add(LCompress);
@@ -1389,7 +1389,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         // TODO add your handling code here:
     }//GEN-LAST:event_M5ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileActionPerformed
         if (!(sourceFactory.getSelected() instanceof FFTFileSource)){
             Mes.append("Выберите файл в списке источников\n");
             return;
@@ -1430,7 +1430,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 p_lastFileName = ss2;
                 p_lastFileDir = ss1;
             }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_FileActionPerformed
 
     private void PauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseActionPerformed
         if (!isRun){
@@ -1824,6 +1824,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JSlider Ampl;
     private javax.swing.JMenuItem ExportBin;
     private javax.swing.JMenuItem ExportJSON;
+    private javax.swing.JButton File;
     private javax.swing.JTextField FileName;
     private javax.swing.JTextField FilterDeep;
     private javax.swing.JComboBox FilterMode;
@@ -1885,7 +1886,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JCheckBoxMenuItem ViewInputAmplitude;
     private javax.swing.JCheckBoxMenuItem ViewSoucrceSpector;
     private javax.swing.JCheckBoxMenuItem WhiteBack;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel10;
