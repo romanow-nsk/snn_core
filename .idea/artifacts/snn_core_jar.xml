@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="snn_core:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/snn_core_jar</output-path>
+    <root id="archive" name="snn_core.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="snn_core" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/aparapi.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/kxml2-2.3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/guava-11.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/xstream-1.4.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-api-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-math3-3.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/reflections-0.9.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-simple-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/javassist-3.16.1-GA.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
