@@ -63,6 +63,16 @@ public class FFTArray {
         if (value > max)
             max = value;
         }
+
+    public void calcMax(){
+        double max = data[0];
+        count = data.length;
+        for(int i=0;i<data.length;i++){
+            diff[i]=0;
+            if (data[i] > max)
+                max = data[i];
+            }
+        }
     public void normalize(float k){
         for (int i=0;i<data.length;i++)
             data[i] *= k;

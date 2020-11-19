@@ -75,7 +75,7 @@ public class GTFilterBank {
             quantCount++;
             }
         }
-    
+    public boolean valid(){ return filterBank!=null; }
     public void procCohleogrammGPU(final float wave[], int procOver){
         final int nQuant = wave.length*(100-procOver)/100;
         GPUGTFilterBank gpuFilter = new GPUGTFilterBank();

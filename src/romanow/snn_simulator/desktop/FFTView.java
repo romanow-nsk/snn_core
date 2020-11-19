@@ -1224,91 +1224,96 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     }
                 @Override
                 public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
-                    long tt = System.currentTimeMillis();
-                    boolean log = p_LogFreq;
-                    float spectrum[] = fft.getLogSpectrum();
-                    boolean xx;
                     try {
-                        synchronized (FFTView.this){
-                            float out[] = null;
-                            float cohle[] = null;
-                            float multiple[] = null;
-                            if (needCohle()){
-                                cohle = fft.getGTSpectrum();
-                                multiple = fft.getMultipleSpectrum(p_MultipleSK);
+                        long tt = System.currentTimeMillis();
+                        boolean log = p_LogFreq;
+                        float spectrum[] = fft.getLogSpectrum();
+                        boolean xx;
+                        try {
+                            synchronized (FFTView.this) {
+                                float out[] = null;
+                                float cohle[] = null;
+                                float multiple[] = null;
+                                if (needCohle()) {
+                                    cohle = fft.getGTSpectrum();
+                                    multiple = fft.getMultipleSpectrum(p_MultipleSK);
                                 }
-                            if (panels[1]!=null)
-                                panels[1].paint(spectrum,fft.getSubToneCount());
-                            if (panels[0]!=null)
-                                panels[0].paint(fft);
-                            if (panels[4]!=null)        // Огибающая спектра  = true
-                                panels[4].paint(fft.getGammatone(p_GTFNote,false), null);
-                            if (panels[5]!=null && cohle!=null)
-                                panels[5].paint(cohle,fft.getSubToneCount());
-                            if (panels[6]!=null)
-                                panels[6].paint(multiple,fft.getSubToneCount());
-                            fft.addCount(6);
-                            if (modelFactory.getSelected()!=null){ 
-                                float src[] = spectrum;
-                                if (p_ModelSourceType!=0){
-                                    if (p_ModelSourceType==1)
-                                        src = cohle;
-                                    else
-                                        src = multiple;
+                                if (panels[1] != null)
+                                    panels[1].paint(spectrum, fft.getSubToneCount());
+                                if (panels[0] != null)
+                                    panels[0].paint(fft);
+                                if (panels[4] != null && fft.validGammatone())        // Огибающая спектра  = true
+                                    panels[4].paint(fft.getGammatone(p_GTFNote, false), null);
+                                if (panels[5] != null && cohle != null)
+                                    panels[5].paint(cohle, fft.getSubToneCount());
+                                if (panels[6] != null)
+                                    panels[6].paint(multiple, fft.getSubToneCount());
+                                fft.addCount(6);
+                                if (modelFactory.getSelected() != null) {
+                                    float src[] = spectrum;
+                                    if (p_ModelSourceType != 0) {
+                                        if (p_ModelSourceType == 1)
+                                            src = cohle;
+                                        else
+                                            src = multiple;
                                     }
-                                out = model.step(src, stepCB); 
-                                fft.addCount(5);
-                                if (p_PlayFilter){
-                                    float vv[] = fft.convertToWave(out,filters[p_FilterMode]);
-                                    player.addToPlay(vv,p_OverProc,0.1F);
+                                    out = model.step(src, stepCB);
+                                    fft.addCount(5);
+                                    if (p_PlayFilter) {
+                                        float vv[] = fft.convertToWave(out, filters[p_FilterMode]);
+                                        player.addToPlay(vv, p_OverProc, 0.1F);
                                     }
-                                if (panels[3]!=null){
-                                    float bb[] = fft.getFilteredSpectrum(out, filters[p_FilterMode]);
-                                    panels[3].paint(bb,fft.getSubToneCount());
+                                    if (panels[3] != null) {
+                                        float bb[] = fft.getFilteredSpectrum(out, filters[p_FilterMode]);
+                                        panels[3].paint(bb, fft.getSubToneCount());
                                     }
-                                if (panels[2]!=null)
-                                    panels[2].paint(out,model.getSubToneCount());
-                                if (panels[8]!=null)
-                                    panels[8].paint(out);
+                                    if (panels[2] != null)
+                                        panels[2].paint(out, model.getSubToneCount());
+                                    if (panels[8] != null)
+                                        panels[8].paint(out);
                                     fft.addCount(6);
                                 }
                             }
-                        } catch (Exception ex) { 
-                            toLog(ex); 
+                        } catch (Exception ex) {
+                            toLog(ex);
+                        }
+                        M2.setText("" + calcMS);
+                        M3.setText("" + nBlock);
+                        Time.setText("" + (int) totalMS);
+                        MaxAmpl.setText("" + fft.getMaxAmpl());
+                        fft.setLogFreqMode(p_LogFreq);
+                        fft.setCompressMode(p_Compress);
+                        fft.setCompressGrade(Integer.parseInt(KCompress.getText()));
+                        if (p_RealTime) {
+                            try {
+                                //---------- Задержа от плейера или вычисляемая
+                                int delay = 0;
+                                FFTAudioSource ais = fft.getAudioInputStream();
+                                if (ais != null && ais.isPlaying()) {
+                                    delay = (int) (totalMS - ais.getCurrentPlayTimeMS());
+                                    if (delay <= 0)
+                                        toLog("Блок " + nBlock + " играет быстрее на " + (-delay));
+                                    else
+                                        sleep(delay);
+                                } else {
+                                    //int t2 = (int)(calcMS+(new Date().getTime()-tt));
+                                    //int delay = (int)(msOnStep-t2);
+                                    long t2 = System.currentTimeMillis();     // Считать период по onStep
+                                    long tt2 = t2 - lastClock;
+                                    delay = (int) (msOnStep - tt2);
+                                    if (delay <= 0)
+                                        toLog("Блок " + nBlock + " задержка " + tt2 + ">" + msOnStep);
+                                    else
+                                        sleep(delay);
+                                }
+                            } catch (InterruptedException ex) {
                             }
-                    M2.setText(""+calcMS);
-                    M3.setText(""+nBlock);
-                    Time.setText(""+(int)totalMS);
-                    MaxAmpl.setText(""+fft.getMaxAmpl());
-                    fft.setLogFreqMode(p_LogFreq);
-                    fft.setCompressMode(p_Compress);
-                    fft.setCompressGrade(Integer.parseInt(KCompress.getText()));
-                    if (p_RealTime){
-                        try {
-                            //---------- Задержа от плейера или вычисляемая
-                            int delay=0;
-                            FFTAudioSource ais = fft.getAudioInputStream();
-                            if (ais!=null && ais.isPlaying()){
-                                delay = (int)(totalMS-ais.getCurrentPlayTimeMS());
-                                if (delay<=0)
-                                    toLog("Блок "+nBlock+" играет быстрее на "+(-delay));
-                                else
-                                    sleep(delay);      
-                                }
-                            else{
-                                //int t2 = (int)(calcMS+(new Date().getTime()-tt));
-                                //int delay = (int)(msOnStep-t2);
-                                long t2 = System.currentTimeMillis();     // Считать период по onStep
-                                long tt2 = t2 - lastClock;
-                                delay = (int)(msOnStep - tt2);
-                                if (delay<=0)
-                                    toLog("Блок "+nBlock+" задержка "+tt2+">"+msOnStep);
-                                else
-                                    sleep(delay);      
-                                }
-                            } catch (InterruptedException ex) {}
-                        lastClock = System.currentTimeMillis();
-                        fft.getAudioInputStream().play((int)totalMS, msOnStep);
+                            lastClock = System.currentTimeMillis();
+                            if (fft.getAudioInputStream()!=null)
+                                fft.getAudioInputStream().play((int) totalMS, msOnStep);
+                        }
+                    } catch (Exception e){
+                        toLog(createFatalMessage(e));
                         }
                     //---------------- Проверка пауза/остановка----------------
                     synchronized(Pause){
@@ -1786,7 +1791,33 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         xx.convertToWave(p_lastFileDir+p_lastFileName, back);
     }//GEN-LAST:event_TextToWaveConvertActionPerformed
 
+    private FFTCallBack emptyCallBack = new FFTCallBack() {
+        @Override
+        public void onStart(float stepMS) { toLog("Начало операции");}
+        @Override
+        public void onFinish() { toLog("Окончание операции");}
+        @Override
+        public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
+            return true; }
+        @Override
+        public void onError(String mes) { toLog("Ошибка: "+mes); }
+        @Override
+        public void onMessage(String mes) { toLog(mes); }
+        };
+
     private void ExportBinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBinActionPerformed
+        String fname = getInputFileName("Конвертер в mpx","wav",null);
+        if (fname==null) return;
+        FFTAudioFile audioFile = new FFTAudioFile();
+        if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fname,44100, emptyCallBack))
+            return;
+        fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc, true,p_SubToneCount,
+                true, false,p_FFTWindowReduce,p_GPUmode));
+        if (!fft.preloadWave(audioFile,emptyCallBack))
+            return;
+        fft.preloadFullSpectrum(false,audioFile,emptyCallBack);
+        fft.preloadFullCohleogramm(false,audioFile,emptyCallBack);
+        /*  ------------ из текущего аудиопотока ---------------------------------------------
         FFTAudioSource src = null;
         src = sourceFactory.getSelected();
         if (!(src instanceof FFTFileSource)){
@@ -1800,13 +1831,12 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             toLog("Файл не открылся\n");
             return;
             }
-        fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc, p_LogFreq,p_SubToneCount,
-                needCohle(), p_GPU,p_FFTWindowReduce,p_GPUmode));
+         */
         new Thread(new Runnable(){
             @Override
             public void run() {
                 try {
-                    fft.FFTDirectBinSave(file,FFTView.this);
+                    fft.FFTDirectBinSave(fname,FFTView.this);
                     } catch (IOException e) {
                         toLog("Ошибка конвертации: "+e.toString());
                 }
@@ -1822,16 +1852,21 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private void PlayMPXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayMPXActionPerformed
         String fname = getInputFileName("Играть MPX","mpx",null);
         try {
-            fft.binLoad(fname);
+            toLog("Файл: "+fname);
+            fft.binLoad(fname,this);
             p_Play=false;
             runToPlay(new Runnable() {
                 @Override
                 public void run() {
-                    fft.fftDirect(back);
-                }
-            });
+                    try {
+                        fft.fftDirect(back);
+                        } catch (Exception e) {
+                        toLog(createFatalMessage(e));
+                        }
+                    }
+                });
             } catch (IOException e) {
-                toLog(e);
+                toLog(createFatalMessage(e));
                 }
     }//GEN-LAST:event_PlayMPXActionPerformed
 
@@ -1868,6 +1903,18 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         return dlg.getDirectory()+"/"+fname;
         }
 
+    public static String createFatalMessage(Throwable ee) {
+        return createFatalMessage(ee,6);
+    }
+    public static String createFatalMessage(Throwable ee, int stackSize) {
+        String ss = ee.toString() + "\n";
+        StackTraceElement dd[] = ee.getStackTrace();
+        for (int i = 0; i < dd.length && i < stackSize; i++) {
+            ss += dd[i].getClassName() + "." + dd[i].getMethodName() + ":" + dd[i].getLineNumber() + "\n";
+        }
+        String out = "Программная ошибка:\n" + ss;
+        return out;
+    }
 
 
     /**

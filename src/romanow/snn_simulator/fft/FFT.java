@@ -78,7 +78,7 @@ public class FFT implements FFTBinStream{
     public String toString(){
         return pars.toString()+"\nШаг лин.спектра (гц)="+stepHZLinear+"\nСдвиг окна (мс)="+stepMS+
                 "\nКомпрессия="+compressMode+"\nСтепень компрессии="+compressGrade+"\nАмпл. компрессии="+kAmpl+
-                "\nГраничная нота="+getFirstValidNote()+"\nОтсчетов="+nblock+"\nВремя (мс)="+totalMS;
+                "\nГраничная нота="+getFirstValidNote()+"\nОтсчетов="+nblock+"\nВремя звучания (с)="+(int)(totalMS/1000);
         }
     public static int pow2(int v){
         return 1<<v;
@@ -281,8 +281,13 @@ public class FFT implements FFTBinStream{
     }
     //----------------- Прямая конвертация гамматона в массив ------------------
     public void preloadFullCohleogramm(FFTAudioSource audioInputStream, FFTCallBack back){
-        if (!preloadWave(audioInputStream,back))
-            return;
+        preloadFullCohleogramm(true,audioInputStream,back);
+        }
+    public void preloadFullCohleogramm(boolean loadWave, FFTAudioSource audioInputStream, FFTCallBack back){
+        if (loadWave){
+            if (!preloadWave(audioInputStream,back))
+                return;
+            }
         int nQuant = pars.W()*(100-pars.procOver())/100;
         int sz = fullWave.length/nQuant;
         int dd=sz/20;
@@ -315,8 +320,13 @@ public class FFT implements FFTBinStream{
         }
     //----------------- Прямая конвертация спектра в массив ------------------
     public void preloadFullSpectrum(FFTAudioSource audioInputStream, FFTCallBack back){
-        if (!preloadWave(audioInputStream,back))
-            return;
+        preloadFullSpectrum(true,audioInputStream,back);
+        }
+    public void preloadFullSpectrum(boolean loadWave,FFTAudioSource audioInputStream, FFTCallBack back){
+        if (loadWave){
+            if (!preloadWave(audioInputStream,back))
+                return;
+            }
         int nQuant = pars.W()*(100-pars.procOver())/100;
         int sz = fullWave.length/nQuant;
         if (fullWave.length%nQuant !=0 ) sz++;
@@ -426,6 +436,8 @@ public class FFT implements FFTBinStream{
                 tc.addCount(3);
                 tc.addCount(4);
                 logSpectrum = logSpectrumList[nblocks];
+                spectrum = logSpectrum;
+                spectrum.calcMax();
                 if (pars.p_Cohleogram())
                     GTSpectrum = GTSpectrumList[nblocks];
                 //spectrum.nextStep();
@@ -536,6 +548,9 @@ public class FFT implements FFTBinStream{
         double out[] = new double[wave.length];
         GTFilterOriginal.filter(convert(wave), sizeHZ, (int)tone, false, out, null, null,null);
         return FFT.convert(out);
+        }
+    public boolean validGammatone(){
+        return filterBank.valid();
         }
     public float []getGammatone(int note,boolean env){ // Для одного тона
         return  filterBank.getGammatone(wave, pars.procOver(), note, env);
@@ -653,6 +668,55 @@ public class FFT implements FFTBinStream{
         return out;
         }
 
+    //--------------- Конвертированный через preload ------------------------------------
+    public void FFTDirectBinSave(String fspec, FFTView view) throws IOException{
+        int idx = fspec.lastIndexOf(".");
+        if (idx==-1){
+            throw new IOException("Спецификация файла: "+fspec);
+            }
+        fspec = fspec.substring(0,idx)+".mpx";
+        final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
+        save(out);
+        totalMS = stepMS*logSpectrumList.length;
+        out.writeFloat(totalMS);
+        nblock = logSpectrumList.length;
+        out.writeInt(nblock);                   // Кол-во отсчетов
+        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        DataOutputStream dtmp = new DataOutputStream(tmp);
+        for(FFTArray zz : logSpectrumList)
+            for(float ff : zz.getOriginal()) {
+                //System.out.print(" "+ff);
+                dtmp.writeFloat(ff);
+                }
+        System.out.println();
+        dtmp.flush();
+        out.write(tmp.toByteArray());
+        tmp.close();
+        dtmp.close();
+        tmp = new ByteArrayOutputStream();
+        dtmp = new DataOutputStream(tmp);
+        for(FFTArray zz : GTSpectrumList)
+            for(float ff : zz.getOriginal())
+                dtmp.writeFloat(ff);
+        dtmp.flush();
+        out.write(tmp.toByteArray());
+        tmp.close();
+        dtmp.close();
+        out.writeInt(fullWave.length);
+        tmp = new ByteArrayOutputStream();
+        dtmp = new DataOutputStream(tmp);
+        for(float ff : fullWave)
+            dtmp.writeFloat(ff);
+        dtmp.flush();
+        out.write(tmp.toByteArray());
+        tmp.close();
+        dtmp.close();
+        out.flush();
+        out.close();
+        view.toLog(this.toString());
+        }
+
+
     public void FFTDirectBinSave(FFTFileSource src, FFTView view) throws IOException{
         System.out.println(this);
         String fspec = src.getFileSpec();
@@ -696,6 +760,7 @@ public class FFT implements FFTBinStream{
         for(float zz[] : spectors)
             for(float ff : zz)
                 dtmp.writeFloat(ff);
+        dtmp.flush();
         out.write(tmp.toByteArray());
         tmp.close();
         dtmp.close();
@@ -705,18 +770,24 @@ public class FFT implements FFTBinStream{
             for(float zz[] : cohles)
                 for(float ff : zz)
                     dtmp.writeFloat(ff);
+            dtmp.flush();
             out.write(tmp.toByteArray());
             tmp.close();
             dtmp.close();
             }
+        out.writeInt(0);            // Размерность Wave
         out.flush();
         out.close();
         }
 
-    public void binLoad(String fspec) throws IOException {
+    public void binLoad(String fspec, FFTView view) throws IOException {
         DataInputStream in = new DataInputStream(new FileInputStream(fspec));
         load(in,0);
         in.close();
+        if (view!=null)
+            view.toLog(this.toString());
+        else
+            System.out.println(this.toString());
         }
 
     @Override
@@ -752,7 +823,7 @@ public class FFT implements FFTBinStream{
         for(int i=0;i<nblock;i++){
             FFTArray vv = new FFTArray(vSize);
             for(int j=0;j<vSize;j++)
-                vv.set(i,bin.readFloat());
+                vv.set(j,bin.readFloat());
             logSpectrumList[i]=vv;
             }
         if (pars.p_Cohleogram()){
@@ -762,9 +833,20 @@ public class FFT implements FFTBinStream{
             for(int i=0;i<nblock;i++){
                 FFTArray vv = new FFTArray(vSize);
                 for(int j=0;j<vSize;j++)
-                    vv.set(i,bin.readFloat());
+                    vv.set(j,bin.readFloat());
                 GTSpectrumList[i]=vv;
                 }
+            }
+        int wsz = in.readInt();
+        if (wsz==0){
+            fullWave=null;
+            }
+        else{
+            bb = new byte[wsz*4];
+            bin = new DataInputStream(new ByteArrayInputStream(bb));
+            fullWave = new float[wsz];
+            for(int j=0;j<wsz;j++)
+                fullWave[j]=bin.readFloat();
             }
         }
 
@@ -787,7 +869,7 @@ public class FFT implements FFTBinStream{
     //-----------------------------------------------------------------------
     public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
-        fft.binLoad("../Waves/BluesMono.mpx");
+        fft.binLoad("../Waves/BluesMono.mpx",null);
         System.out.println(fft.toString());
         /*
         FFTAudioFile file = new FFTAudioFile();
