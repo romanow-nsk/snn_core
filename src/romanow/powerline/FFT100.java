@@ -60,7 +60,7 @@ public class FFT100 {
     public int getAudioLength(FFTAudioSource audioInputStream, FFTCallBack back){
         calcFFTParams();
         if (audioInputStream==null){
-            back.onError("Не выбран источник аудио");
+            back.onError(new Exception("Не выбран источник аудио"));
             return -1;
             }
         back.onMessage("Длина "+audioInputStream.getFrameLength()+
@@ -76,7 +76,7 @@ public class FFT100 {
         try {
             audioInputStream.read(fullWave, 0, size);
             } catch(IOException ee){
-                back.onError("Ошибка чтения аудио");
+                back.onError(new Exception("Ошибка чтения аудио"));
                 return false;
                 }
         return true;

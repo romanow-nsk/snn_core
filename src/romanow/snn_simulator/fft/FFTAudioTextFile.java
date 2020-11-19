@@ -123,7 +123,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             fspec = PatnToFile;
             return true;
             } catch(Exception ee){
-                back.onError(ee.getMessage());
+                back.onError(ee);
                 close();
                 return false;
                 }

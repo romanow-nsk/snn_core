@@ -61,14 +61,14 @@ public class FFTAudioFile implements FFTFileSource{
         try {
             audioInputStream = AudioSystem.getAudioInputStream(AudioFile);
             } catch (Exception e) {
-                back.onError(e.toString());
+                back.onError(e);
                 close();
                 back.onFinish();
                 return false;
                 }
         String ss = testSource(sizeHZ);
         if (ss!=null){
-            back.onError(ss);
+            back.onError(new Exception(ss));
             back.onFinish();
             return false;
             }
@@ -80,7 +80,7 @@ public class FFTAudioFile implements FFTFileSource{
             	clip.open(AudioSystem.getAudioInputStream(AudioFile));
                 } catch (Exception ex) {
                     close();
-                    back.onError(ex.getLocalizedMessage()+"/"+ex.getMessage()+"/"+ex.toString());
+                    back.onError(ex);
                     back.onFinish();
                     return false;
                     }

@@ -1325,8 +1325,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     return isRun;
                     }
                 @Override
-                public void onError(String mes) {
-                    toLog(true,"1."+mes);
+                public void onError(Exception ee) {
+                    toLog(true,"1."+createFatalMessage(ee));
                     }
                 @Override
                 public void onMessage(String mes) {
@@ -1431,8 +1431,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     return false;
                     }
                 @Override
-                public void onError(String mes) {
-                    toLog(true,"3."+mes);
+                public void onError(Exception ee) {
+                    toLog(true,"3."+createFatalMessage(ee));
                     }
                 @Override
                 public void onMessage(String mes) {
@@ -1791,7 +1791,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         xx.convertToWave(p_lastFileDir+p_lastFileName, back);
     }//GEN-LAST:event_TextToWaveConvertActionPerformed
 
-    private FFTCallBack emptyCallBack = new FFTCallBack() {
+   public FFTCallBack emptyCallBack = new FFTCallBack() {
         @Override
         public void onStart(float stepMS) { toLog("Начало операции");}
         @Override
@@ -1800,9 +1800,20 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
             return true; }
         @Override
-        public void onError(String mes) { toLog("Ошибка: "+mes); }
+        public void onError(Exception ee) { toLog("Ошибка: "+createFatalMessage(ee)); }
         @Override
         public void onMessage(String mes) { toLog(mes); }
+        };
+
+    private  I_Notify notify = new I_Notify() {
+            @Override
+            public void onMessage(String mes) {
+                toLog(mes);
+            }
+            @Override
+            public void onError(Exception ee) {
+                toLog(createFatalMessage(ee));
+            }
         };
 
     private void ExportBinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBinActionPerformed
@@ -1817,29 +1828,10 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             return;
         fft.preloadFullSpectrum(false,audioFile,emptyCallBack);
         fft.preloadFullCohleogramm(false,audioFile,emptyCallBack);
-        /*  ------------ из текущего аудиопотока ---------------------------------------------
-        FFTAudioSource src = null;
-        src = sourceFactory.getSelected();
-        if (!(src instanceof FFTFileSource)){
-            toLog("Конвертация только для файлов\n");
-            return;
-            }
-        FFTFileSource file  =  (FFTFileSource)src;
-        boolean ff = file.testAndOpenFile(FFTAudioFile.OpenAndPlay, p_lastFileDir+p_lastFileName,FFT.sizeHZ, back);
-            file.enableToPlay(p_RealTime && p_Play);
-        if (!ff) {
-            toLog("Файл не открылся\n");
-            return;
-            }
-         */
         new Thread(new Runnable(){
             @Override
             public void run() {
-                try {
-                    fft.FFTDirectBinSave(fname,FFTView.this);
-                    } catch (IOException e) {
-                        toLog("Ошибка конвертации: "+e.toString());
-                }
+                fft.binSave(fname,notify);
             }
         }).start();
 
@@ -1851,9 +1843,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
     private void PlayMPXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayMPXActionPerformed
         String fname = getInputFileName("Играть MPX","mpx",null);
-        try {
             toLog("Файл: "+fname);
-            fft.binLoad(fname,this);
+            fft.binLoad(fname,notify);
             p_Play=false;
             runToPlay(new Runnable() {
                 @Override
@@ -1865,9 +1856,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                         }
                     }
                 });
-            } catch (IOException e) {
-                toLog(createFatalMessage(e));
-                }
     }//GEN-LAST:event_PlayMPXActionPerformed
 
 
@@ -1903,7 +1891,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         return dlg.getDirectory()+"/"+fname;
         }
 
-    public static String createFatalMessage(Throwable ee) {
+    public String createFatalMessage(Throwable ee) {
         return createFatalMessage(ee,6);
     }
     public static String createFatalMessage(Throwable ee, int stackSize) {

@@ -125,8 +125,8 @@ public class desktop extends javax.swing.JFrame {
             return false;
             }
         @Override
-        public void onError(String mes) {
-            toLog(true,"1."+mes);
+        public void onError(Exception ex) {
+            toLog(true,"1."+ex.toString());
             }
         @Override
         public void onMessage(String mes) {
@@ -187,8 +187,8 @@ public class desktop extends javax.swing.JFrame {
                     return false;
                     }
                 @Override
-                public void onError(String mes) {
-                    toLog(true,"3."+mes);
+                public void onError(Exception ee) {
+                    toLog(true,"3."+ee.toString());
                     }
                 @Override
                 public void onMessage(String mes) {

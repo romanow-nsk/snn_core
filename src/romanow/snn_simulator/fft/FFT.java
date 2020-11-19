@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import romanow.snn_simulator.desktop.FFTView;
+import romanow.snn_simulator.desktop.I_Notify;
 import romanow.snn_simulator.gammatone.GTFilterBank;
 import romanow.snn_simulator.gammatone.GTFilterOriginal;
 import org.apache.commons.math3.complex.Complex;
@@ -256,7 +257,7 @@ public class FFT implements FFTBinStream{
         createFilterBank();
         filterBank.clear();
         if (audioInputStream==null){
-            back.onError("Не выбран источник аудио");
+            back.onError(new Exception("Не выбран источник аудио"));
             return -1;
             }
         this.audioInputStream = audioInputStream;
@@ -273,7 +274,7 @@ public class FFT implements FFTBinStream{
         try {
             audioInputStream.read(fullWave, 0, size);
             } catch(IOException ee){
-                back.onError("Ошибка чтения аудио");
+                back.onError(ee);
                 clearPreload();
                 return false;
                 }
@@ -414,7 +415,7 @@ public class FFT implements FFTBinStream{
             back.onMessage(tc.toString());
             close(back);
             } catch (Exception e) { 
-                back.onError(e.toString());
+                back.onError(e);
                 close(back);
                 }
         }
@@ -452,7 +453,7 @@ public class FFT implements FFTBinStream{
             back.onMessage(tc.toString());
             close(back);
             } catch (Exception e) { 
-                back.onError(e.toString());
+                back.onError(e);
                 close(back);
                 }
         }
@@ -668,126 +669,170 @@ public class FFT implements FFTBinStream{
         return out;
         }
 
-    //--------------- Конвертированный через preload ------------------------------------
-    public void FFTDirectBinSave(String fspec, FFTView view) throws IOException{
-        int idx = fspec.lastIndexOf(".");
-        if (idx==-1){
-            throw new IOException("Спецификация файла: "+fspec);
-            }
-        fspec = fspec.substring(0,idx)+".mpx";
-        final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
-        save(out);
-        totalMS = stepMS*logSpectrumList.length;
-        out.writeFloat(totalMS);
-        nblock = logSpectrumList.length;
-        out.writeInt(nblock);                   // Кол-во отсчетов
-        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-        DataOutputStream dtmp = new DataOutputStream(tmp);
-        for(FFTArray zz : logSpectrumList)
-            for(float ff : zz.getOriginal()) {
-                //System.out.print(" "+ff);
-                dtmp.writeFloat(ff);
-                }
-        System.out.println();
-        dtmp.flush();
-        out.write(tmp.toByteArray());
-        tmp.close();
-        dtmp.close();
-        tmp = new ByteArrayOutputStream();
-        dtmp = new DataOutputStream(tmp);
-        for(FFTArray zz : GTSpectrumList)
-            for(float ff : zz.getOriginal())
-                dtmp.writeFloat(ff);
-        dtmp.flush();
-        out.write(tmp.toByteArray());
-        tmp.close();
-        dtmp.close();
-        out.writeInt(fullWave.length);
-        tmp = new ByteArrayOutputStream();
-        dtmp = new DataOutputStream(tmp);
-        for(float ff : fullWave)
-            dtmp.writeFloat(ff);
-        dtmp.flush();
-        out.write(tmp.toByteArray());
-        tmp.close();
-        dtmp.close();
-        out.flush();
-        out.close();
-        view.toLog(this.toString());
+
+    public static FFTCallBack emptyCallBack = new FFTCallBack() {
+        @Override
+        public void onMessage(String mes) { System.out.println(mes); }
+        @Override
+        public void onError(Exception ee) { System.out.println(FFTView.createFatalMessage(ee,5));}
+        @Override
+        public void onStart(float stepMS) { System.out.println("Начало операции");}
+        @Override
+        public void onFinish() { System.out.println("Окончание операции");}
+        @Override
+        public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) { return true; }
+        };
+
+    public void binConvert(FFTParams params,String fspec){
+        binConvert(params,fspec,emptyCallBack);
+        }
+    public void binConvert(FFTParams params,String fspec, FFTCallBack emptyCallBack){
+        FFTAudioFile audioFile = new FFTAudioFile();
+        if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fspec,44100, emptyCallBack))
+            return;
+        setFFTParams(params);
+        if (!preloadWave(audioFile,emptyCallBack))
+            return;
+        preloadFullSpectrum(false,audioFile,emptyCallBack);
+        preloadFullCohleogramm(false,audioFile,emptyCallBack);
+        binSave(fspec,emptyCallBack);
         }
 
 
-    public void FFTDirectBinSave(FFTFileSource src, FFTView view) throws IOException{
-        System.out.println(this);
-        String fspec = src.getFileSpec();
+    //--------------- Конвертированный через preload ------------------------------------
+    public void binSave(String fspec, I_Notify view){
         int idx = fspec.lastIndexOf(".");
         if (idx==-1){
-            throw new IOException("Спецификация файла: "+fspec);
+            view.onMessage("Спецификация файла: "+fspec);
+            return;
             }
-        fspec = fspec.substring(0,idx)+".mpx";
-        final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
-        final ArrayList<float[]> spectors = new ArrayList<>();
-        final ArrayList<float[]> cohles = new ArrayList<>();
-        save(out);
-        FFTCallBack back = new FFTCallBack(){
-            @Override
-            public void onStart(float msOnStep) { System.out.println("Стартанул"); }
-            @Override
-            public void onFinish() {
-                System.out.println("Закончил");
-            }
-            @Override
-            public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
-                if (nBlock%100==0)
-                    onMessage("Отсчетов: "+nBlock);
-                spectors.add(getLogSpectrum());
-                if (pars.p_Cohleogram())
-                    cohles.add(getGTSpectrum());
-                return true;
+        try {
+            fspec = fspec.substring(0, idx) + ".mpx";
+            final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
+            save(out);
+            totalMS = stepMS * logSpectrumList.length;
+            out.writeFloat(totalMS);
+            nblock = logSpectrumList.length;
+            out.writeInt(nblock);                   // Кол-во отсчетов
+            ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+            DataOutputStream dtmp = new DataOutputStream(tmp);
+            for (FFTArray zz : logSpectrumList)
+                for (float ff : zz.getOriginal()) {
+                    //System.out.print(" "+ff);
+                    dtmp.writeFloat(ff);
                 }
-            @Override
-            public void onError(String mes) {
-                view.toLog(mes);
-            }
-            @Override
-            public void onMessage(String mes) { view.toLog(mes); }
-            };
-        fftDirect(src,back);
-        out.writeFloat(totalMS);
-        out.writeInt(spectors.size());          // Кол-во отсчетов
-        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-        DataOutputStream dtmp = new DataOutputStream(tmp);
-        for(float zz[] : spectors)
-            for(float ff : zz)
-                dtmp.writeFloat(ff);
-        dtmp.flush();
-        out.write(tmp.toByteArray());
-        tmp.close();
-        dtmp.close();
-        if (pars.p_Cohleogram()){
+            System.out.println();
+            dtmp.flush();
+            out.write(tmp.toByteArray());
+            tmp.close();
+            dtmp.close();
             tmp = new ByteArrayOutputStream();
             dtmp = new DataOutputStream(tmp);
-            for(float zz[] : cohles)
-                for(float ff : zz)
+            for (FFTArray zz : GTSpectrumList)
+                for (float ff : zz.getOriginal())
                     dtmp.writeFloat(ff);
             dtmp.flush();
             out.write(tmp.toByteArray());
             tmp.close();
             dtmp.close();
-            }
-        out.writeInt(0);            // Размерность Wave
-        out.flush();
-        out.close();
+            out.writeInt(fullWave.length);
+            tmp = new ByteArrayOutputStream();
+            dtmp = new DataOutputStream(tmp);
+            for (float ff : fullWave)
+                dtmp.writeFloat(ff);
+            dtmp.flush();
+            out.write(tmp.toByteArray());
+            tmp.close();
+            dtmp.close();
+            out.flush();
+            out.close();
+            view.onMessage(this.toString());
+            }catch (IOException ee){ view.onError(ee); }
         }
 
-    public void binLoad(String fspec, FFTView view) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(fspec));
-        load(in,0);
-        in.close();
-        if (view!=null)
-            view.toLog(this.toString());
-        else
-            System.out.println(this.toString());
+
+    public void binSave(FFTFileSource src, I_Notify view) {
+        try {
+            System.out.println(this);
+            String fspec = src.getFileSpec();
+            int idx = fspec.lastIndexOf(".");
+            if (idx == -1) {
+                view.onMessage("Спецификация файла: " + fspec);
+                return;
+            }
+            fspec = fspec.substring(0, idx) + ".mpx";
+            final DataOutputStream out = new DataOutputStream(new FileOutputStream(fspec));
+            final ArrayList<float[]> spectors = new ArrayList<>();
+            final ArrayList<float[]> cohles = new ArrayList<>();
+            save(out);
+            FFTCallBack back = new FFTCallBack() {
+                @Override
+                public void onStart(float msOnStep) {
+                    System.out.println("Стартанул");
+                }
+
+                @Override
+                public void onFinish() {
+                    System.out.println("Закончил");
+                }
+
+                @Override
+                public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
+                    if (nBlock % 100 == 0)
+                        onMessage("Отсчетов: " + nBlock);
+                    spectors.add(getLogSpectrum());
+                    if (pars.p_Cohleogram())
+                        cohles.add(getGTSpectrum());
+                    return true;
+                    }
+                @Override
+                public void onError(Exception ee) {
+                    view.onError(ee);
+                    }
+                @Override
+                public void onMessage(String mes) {
+                    view.onMessage(mes);
+                    }
+                };
+            fftDirect(src, back);
+            out.writeFloat(totalMS);
+            out.writeInt(spectors.size());          // Кол-во отсчетов
+            ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+            DataOutputStream dtmp = new DataOutputStream(tmp);
+            for (float zz[] : spectors)
+                for (float ff : zz)
+                    dtmp.writeFloat(ff);
+            dtmp.flush();
+            out.write(tmp.toByteArray());
+            tmp.close();
+            dtmp.close();
+            if (pars.p_Cohleogram()) {
+                tmp = new ByteArrayOutputStream();
+                dtmp = new DataOutputStream(tmp);
+                for (float zz[] : cohles)
+                    for (float ff : zz)
+                        dtmp.writeFloat(ff);
+                dtmp.flush();
+                out.write(tmp.toByteArray());
+                tmp.close();
+                dtmp.close();
+            }
+            out.writeInt(0);            // Размерность Wave
+            out.flush();
+            out.close();
+            } catch (IOException ee){ view.onError(ee); }
+        }
+
+    public void binLoad(String fspec) {
+        binLoad(fspec,emptyCallBack);
+        }
+    public void binLoad(String fspec, I_Notify view) {
+        try {
+            DataInputStream in = new DataInputStream(new FileInputStream(fspec));
+            load(in,0);
+            in.close();
+            view.onMessage(this.toString());
+            } catch (IOException ee){ view.onError(ee);}
         }
 
     @Override
@@ -869,41 +914,10 @@ public class FFT implements FFTBinStream{
     //-----------------------------------------------------------------------
     public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
-        fft.binLoad("../Waves/BluesMono.mpx",null);
+        FFTParams params = new FFTParams(1024*16,80,2,false);
+        fft.binConvert(params,"../Waves/BluesMono.wav");
+        fft.binLoad("../Waves/BluesMono.mpx");
         System.out.println(fft.toString());
-        /*
-        FFTAudioFile file = new FFTAudioFile();
-        FFTCallBack back = new FFTCallBack(){
-            @Override
-            public void onStart(float msOnStep) {
-                System.out.println("Стартанул");
-                }
-            @Override
-            public void onFinish() {
-                System.out.println("Закончил");
-                }
-            @Override
-            public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft) {
-                float vv[]=fft.getLogSpectrum();
-                System.out.println("Блок " + nBlock+" Спектр= "+vv.length+" Время (мс)="+totalMS);
-                for(int i=0;i<vv.length;i++)
-                    System.out.print(" "+vv[i]);
-                System.out.println();
-                return true;
-                }
-            @Override
-            public void onError(String mes) {
-                System.out.println(mes);
-                }
-            @Override
-            public void onMessage(String mes) {
-                System.out.println(mes);
-                }
-            };
-        file.testAndOpenFile(FFTAudioFile.Open,"../Waves/BluesMono.wav", 44100, back);
-        fft.setFFTParams(new FFTParams(1024, 0, false,2,false,false,false,0));
-        fft.fftDirect(file,back);
-         */
     }
 
 }

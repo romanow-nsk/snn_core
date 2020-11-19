@@ -34,6 +34,16 @@ public class FFTParams implements FFTBinStream{
         this.p_Cohleogram = p_Cohleogram;
         this.p_GPU = p_GPU;
         }
+    public FFTParams(int W, int procOver, int subToneCount, boolean FFTWindowReduce){
+        GPUmode = 0;
+        this.FFTWindowReduce = FFTWindowReduce;
+        this.W = W;
+        this.procOver = procOver;
+        this.logFreqMode= true;
+        this.subToneCount = subToneCount;
+        this.p_Cohleogram = true;
+        p_GPU = false;
+    }
     public String toString(){
         return "Укорочение интервалов ВЧ="+FFTWindowReduce+"\nШирина окна="+W+
                 "\nПроцент перекрытия="+procOver+"\nОктавный режим="+logFreqMode+"\nЧастот в полутоне="+subToneCount+

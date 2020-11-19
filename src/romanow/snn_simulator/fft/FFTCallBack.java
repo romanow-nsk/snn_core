@@ -5,14 +5,14 @@
  */
 package romanow.snn_simulator.fft;
 
+import romanow.snn_simulator.desktop.I_Notify;
+
 /**
  *
  * @author romanow
  */
-public interface FFTCallBack {
+public interface FFTCallBack extends I_Notify {
     public void onStart(float stepMS);
     public void onFinish();
     public boolean onStep(int nBlock, int calcMS, float totalMS, FFT fft);
-    public void onError(String mes);
-    public void onMessage(String mes);
-}
+    }
