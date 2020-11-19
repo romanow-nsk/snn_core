@@ -700,6 +700,9 @@ public class FFT implements FFTBinStream{
 
 
     //--------------- Конвертированный через preload ------------------------------------
+    public void binSave(String fspec){
+        binSave(fspec,emptyCallBack);
+        }
     public void binSave(String fspec, I_Notify view){
         int idx = fspec.lastIndexOf(".");
         if (idx==-1){
@@ -910,13 +913,13 @@ public class FFT implements FFTBinStream{
         for(int vv: toneIndexes)
             out.writeInt(vv);
     }
-    //--------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
         FFTParams params = new FFTParams(1024*16,80,2,false);
         fft.binConvert(params,"../Waves/BluesMono.wav");
         fft.binLoad("../Waves/BluesMono.mpx");
+        fft.binSave("../Waves/BluesMono2.mpx");
         System.out.println(fft.toString());
     }
 

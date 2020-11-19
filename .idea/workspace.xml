@@ -7,16 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/I_Notify.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/powerline/FFT100.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/powerline/FFT100.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/powerline/desktop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/powerline/desktop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTCallBack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTCallBack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTParams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTParams.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +56,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Application.FFTView">
+  <component name="RunManager" selected="Application.FFT">
     <configuration name="FFT" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="romanow.snn_simulator.fft.FFT" />
       <module name="snn_core" />
@@ -93,8 +85,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.FFTView" />
         <item itemvalue="Application.FFT" />
+        <item itemvalue="Application.FFTView" />
       </list>
     </recent_temporary>
   </component>
@@ -159,14 +151,22 @@
       <option name="project" value="LOCAL" />
       <updated>1605765734759</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Интерфейс FFT">
+      <created>1605795519189</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1605795519189</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix0 on Git" />
     <MESSAGE value="Файл спектра" />
     <MESSAGE value="Файл спектра (спектр+кохлеограмма+волна)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Файл спектра (спектр+кохлеограмма+волна)" />
+    <MESSAGE value="Интерфейс FFT" />
+    <option name="LAST_COMMIT_MESSAGE" value="Интерфейс FFT" />
   </component>
   <component name="WindowStateProjectService">
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1605794200175">
@@ -181,30 +181,30 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1600.870@0.0.1600.870" timestamp="1605678593597" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1605765733355">
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1605795515863">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1605765733355" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1605795515863" />
     <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1605675168961">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="506" y="179" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1605675168960" />
-    <state width="1556" height="288" key="GridCell.Tab.0.bottom" timestamp="1605795302235">
+    <state width="1556" height="288" key="GridCell.Tab.0.bottom" timestamp="1605796120616">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="288" key="GridCell.Tab.0.bottom/0.0.1600.870@0.0.1600.870" timestamp="1605795302235" />
-    <state width="1556" height="288" key="GridCell.Tab.0.center" timestamp="1605795302235">
+    <state width="1556" height="288" key="GridCell.Tab.0.bottom/0.0.1600.870@0.0.1600.870" timestamp="1605796120616" />
+    <state width="1556" height="288" key="GridCell.Tab.0.center" timestamp="1605796120616">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="288" key="GridCell.Tab.0.center/0.0.1600.870@0.0.1600.870" timestamp="1605795302235" />
-    <state width="1556" height="288" key="GridCell.Tab.0.left" timestamp="1605795302234">
+    <state width="1556" height="288" key="GridCell.Tab.0.center/0.0.1600.870@0.0.1600.870" timestamp="1605796120616" />
+    <state width="1556" height="288" key="GridCell.Tab.0.left" timestamp="1605796120616">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="288" key="GridCell.Tab.0.left/0.0.1600.870@0.0.1600.870" timestamp="1605795302234" />
-    <state width="1556" height="288" key="GridCell.Tab.0.right" timestamp="1605795302235">
+    <state width="1556" height="288" key="GridCell.Tab.0.left/0.0.1600.870@0.0.1600.870" timestamp="1605796120616" />
+    <state width="1556" height="288" key="GridCell.Tab.0.right" timestamp="1605796120616">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="288" key="GridCell.Tab.0.right/0.0.1600.870@0.0.1600.870" timestamp="1605795302235" />
+    <state width="1556" height="288" key="GridCell.Tab.0.right/0.0.1600.870@0.0.1600.870" timestamp="1605796120616" />
     <state width="1556" height="283" key="GridCell.Tab.1.bottom" timestamp="1605765819451">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -225,10 +225,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="280" y="12" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1605764718949" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1605765755616">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1605795522720">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1605765755616" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1605795522720" />
     <state x="641" y="171" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1605675088722">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
