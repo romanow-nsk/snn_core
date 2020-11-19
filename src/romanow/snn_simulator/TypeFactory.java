@@ -48,7 +48,13 @@ public class TypeFactory<T extends I_Name> implements I_NamedFactory<T> {
             Object oo[] = subTypes.toArray();
             for (Object oo1 : oo) {
                 Class cls = (Class) oo1;
+                if (cls.isInterface())
+                    continue;
                 clsName = cls.getName();
+                if (cls.getSimpleName().equals("NL_Integrate"))
+                    continue;
+                if (cls.getSimpleName().equals("NL_IntegrateBuffered"))
+                    continue;
                 try {
                     T obj = (T)Class.forName(clsName).newInstance();
                     if (obj!=null)
