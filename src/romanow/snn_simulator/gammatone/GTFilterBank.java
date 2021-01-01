@@ -7,9 +7,10 @@ package romanow.snn_simulator.gammatone;
 
 import static romanow.snn_simulator.fft.FFT.Ccontr;
 import static romanow.snn_simulator.fft.FFT.Octaves;
-import static romanow.snn_simulator.fft.FFT.pow2;
-import static romanow.snn_simulator.fft.FFT.sizeHZ;
+
+import romanow.snn_simulator.fft.FFT;
 import romanow.snn_simulator.fft.FFTArray;
+import romanow.snn_simulator.fft.FFTParams;
 import romanow.snn_simulator.fft.GPU;
 
 /**
@@ -18,7 +19,7 @@ import romanow.snn_simulator.fft.GPU;
  */
 public class GTFilterBank {
     private GTFilter filterBank[]=null;
-    private int subToneCount=0;
+    private FFTParams params;
     private float max=0;
     int quantCount=0;
     public GTFilter[] getFilterBank() {
@@ -37,19 +38,29 @@ public class GTFilterBank {
     public GTFilterBank(){
         quantCount=0;
         }
-    public void createGTFilterBank(int subToneCount){   
-        this.subToneCount = subToneCount;
-        float c0 = Ccontr;
-        int octSize = 12*subToneCount;
-        int dd = 0;
-        filterBank = new GTFilter[Octaves*octSize];
-        int k=0;
-        for(int i=0;i<Octaves;i++,c0*=2){
-            for(int j=0;j<octSize;j++,k++){
-                float tone = (float)(c0*Math.pow(2, ((float)j)/octSize));
-                filterBank[k]=new GTFilter(sizeHZ, (int)tone);
+    public void createGTFilterBank(FFTParams params0){
+        params = params0;
+        int subToneCount = params.subToneCount();
+        if (params.logFreqMode()) {
+            float c0 = Ccontr;
+            int octSize = 12 * subToneCount;
+            int dd = 0;
+            filterBank = new GTFilter[Octaves * octSize];
+            int k = 0;
+            for (int i = 0; i < Octaves; i++, c0 *= 2) {
+                for (int j = 0; j < octSize; j++, k++) {
+                    float tone = (float) (c0 * Math.pow(2, ((float) j) / octSize));
+                    filterBank[k] = new GTFilter(FFT.sizeHZ, (int) tone);
+                    }
                 }
-            }        
+            }
+        else{
+            double dtone = ((double) FFT.sizeHZ)/params.W();
+            filterBank = new GTFilter[params.W()];
+            for(int i=0;i<filterBank.length;i++){
+                filterBank[i] = new GTFilter(FFT.sizeHZ, (int) ((i+1)*dtone));
+                }
+            }
         }
     public void procCohleogramm(float wave[], int procOver, GPU gpu){
         if (gpu.devicePresent())
@@ -86,7 +97,7 @@ public class GTFilterBank {
         return filterBank[i];
         } 
     public float []getGammatone(float wave[], int procOver,int note,boolean env){ // Для одного тона
-        GTFilter flt = filterBank[note*subToneCount];
+        GTFilter flt = filterBank[note*params.subToneCount()];
         //------------ Размер выхода с учетом перекрытия -----------------------
         float out[] = new float[wave.length*(100-procOver)/100];
         for(int i=0; i<out.length;i++){

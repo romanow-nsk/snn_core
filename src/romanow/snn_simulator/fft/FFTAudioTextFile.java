@@ -99,7 +99,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             int i;  
             num_channels = 1;  
             bytes_per_sample = 2;
-            sample_rate = 100; // 44100;
+            sample_rate = 44100; //100; // 44100;
         	byte_rate = sample_rate*num_channels*bytes_per_sample;
         	write_string("RIFF", wav_file);
             write_little_endian(36 + bytes_per_sample* num_samples*num_channels, 4, wav_file);
@@ -175,7 +175,8 @@ public class FFTAudioTextFile implements FFTFileSource{
     public String testSource(int sizeHZ) {
         // Формат не проверяется
         return null;
-        }    
+        }
+
     @Override
     public long getFrameLength() {
         return sz*repeat;

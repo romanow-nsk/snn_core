@@ -26,6 +26,7 @@ public class FFTSinus implements FFTAudioSource{
     public String testSource(int sizeHZ) {
         return null;
         }
+
     @Override
     public long getFrameLength() {
         return size;

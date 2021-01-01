@@ -1084,7 +1084,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         });
         Операции.add(TextToWaveConvert);
 
-        ExportBin.setText("Экспорт в файл (bsnn)");
+        ExportBin.setText("Экспорт в файл (mpx)");
         ExportBin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ExportBinActionPerformed(evt);
@@ -1228,6 +1228,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                         long tt = System.currentTimeMillis();
                         boolean log = p_LogFreq;
                         float spectrum[] = fft.getLogSpectrum();
+                        float lineSpectrum[] = fft.getSpectrum();
                         boolean xx;
                         try {
                             synchronized (FFTView.this) {
@@ -1237,17 +1238,29 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                 if (needCohle()) {
                                     cohle = fft.getGTSpectrum();
                                     multiple = fft.getMultipleSpectrum(p_MultipleSK);
-                                }
-                                if (panels[1] != null)
-                                    panels[1].paint(spectrum, fft.getSubToneCount());
+                                    }
+                                if (panels[1] != null){
+                                    if (fft.isLogFreqMode())
+                                        panels[1].paint(spectrum, fft.getSubToneCount());
+                                    else
+                                        panels[1].paint(lineSpectrum);
+                                    }
                                 if (panels[0] != null)
                                     panels[0].paint(fft);
                                 if (panels[4] != null && fft.validGammatone())        // Огибающая спектра  = true
                                     panels[4].paint(fft.getGammatone(p_GTFNote, false), null);
-                                if (panels[5] != null && cohle != null)
-                                    panels[5].paint(cohle, fft.getSubToneCount());
-                                if (panels[6] != null)
-                                    panels[6].paint(multiple, fft.getSubToneCount());
+                                if (panels[5] != null && cohle != null){
+                                    if (fft.isLogFreqMode())
+                                        panels[5].paint(cohle, fft.getSubToneCount());
+                                    else
+                                        panels[5].paint(cohle);
+                                    }
+                                if (panels[6] != null){
+                                    if (fft.isLogFreqMode())
+                                        panels[6].paint(multiple, fft.getSubToneCount());
+                                    else
+                                        panels[6].paint(multiple);
+                                    }
                                 fft.addCount(6);
                                 if (modelFactory.getSelected() != null) {
                                     float src[] = spectrum;
@@ -1410,7 +1423,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             return;
             }
         FileDialog dlg=new FileDialog(this,"Звуковой файл",FileDialog.LOAD);
-        String ex = ((String)Samples.getSelectedItem()).equals("Файл") ? "wav" : "mpx";
+        String ex = ((String)Samples.getSelectedItem()).equals("Файл") ? "wav" : "txt";
         dlg.setFile("*."+ex);
         dlg.show();
         String ss1 = dlg.getDirectory();

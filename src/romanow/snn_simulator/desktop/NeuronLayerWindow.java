@@ -38,7 +38,12 @@ public class NeuronLayerWindow extends LayerWindow {
         super.reset();
         panel.reset();
         }
-    public void paint(float spikes[], int subToneCount){   
+    @Override
+    public void paint(float spikes[], int subToneCount){
         panel.paint(spikes,subToneCount);
         }
+    @Override
+    public void paint(float spikes[]){
+        panel.paint(spikes);
+    }
 }

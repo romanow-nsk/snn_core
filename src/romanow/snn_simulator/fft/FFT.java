@@ -16,37 +16,12 @@ import romanow.snn_simulator.gammatone.GPUFiltersKernel;
 import romanow.snn_simulator.gammatone.GPUGTFilterBank;
  
 public class FFT implements FFTBinStream{
-    //------------- СТАТИЧЕСКАЯ ЧАСТЬ
-    private static float expValues[]=null;         // Подчитаниие заранее значения экспоненты
-    private static float dExp=0.01F;                // Шаг экспоненты
-    private static float expLimit=50;              // Диапазон экспоненты
-    private static void calcExp(){
-        if (expValues!=null)
-            return;
-        expValues = new float[(int)(expLimit/dExp)];
-        for(int i=0;i<expValues.length;i++)
-            expValues[i] = (float)(Math.exp(-i*dExp));
-        }
-    public static float getExp(float x){       // Значение 
-        if (x<0 || x>expLimit)
-            return (float)(Math.exp(-x));
-        calcExp();
-        return expValues[(int)(x/dExp)];
-        }
-    //---------------------------------------------------------------------------
-    //private int W=1024;                            // Кол-во точек в преобразовании
-    //private int GPUmode=0;
-    //private boolean FFTWindowReduce=false;
-    //private int procOver=0;                        // Процент перекрытия окна за шаг
-    //private boolean logFreqMode=false;
-    //private boolean p_Cohleogram=false;
-    //private int subToneCount=4;                   // Дискретность - 1/8 тона (1/4 полутона)
     public final static int formatVersion=1;        // Версия формата
     public final static String formatSignature="CASA Spectrums Binary Data";
-    public final static int sizeHZ = 44100;         // Частотный диапазон оцифровки
     public final static float Ccontr = 33;          // Частота до контр-октавы
     public final static int Octaves = 10;           // Кол-во октав
     public final static int  Size0= 1024;           // 1024 базовая степень FFT
+    public final static int sizeHZ = 44100;         // Частотный диапазон оцифровки
     private int currentFormatVersion=0;
     private float stepHZLinear;                     // Шаг лин.спектра
     private float totalMS=0;                        // Текущий момент времени
@@ -83,6 +58,23 @@ public class FFT implements FFTBinStream{
         }
     public static int pow2(int v){
         return 1<<v;
+        }
+    //------------- СТАТИЧЕСКАЯ ЧАСТЬ
+    private static float expValues[]=null;         // Подчитаниие заранее значения экспоненты
+    private static float dExp=0.01F;                // Шаг экспоненты
+    private static float expLimit=50;              // Диапазон экспоненты
+    private static void calcExp(){
+        if (expValues!=null)
+            return;
+        expValues = new float[(int)(expLimit/dExp)];
+        for(int i=0;i<expValues.length;i++)
+            expValues[i] = (float)(Math.exp(-i*dExp));
+    }
+    public static float getExp(float x){       // Значение
+        if (x<0 || x>expLimit)
+            return (float)(Math.exp(-x));
+        calcExp();
+        return expValues[(int)(x/dExp)];
         }
     //----------------- Определить граничную ноту шагу частоты
     public String getFirstValidNote(){
@@ -253,9 +245,6 @@ public class FFT implements FFTBinStream{
         toneIndexes = out;
         }
     public int getAudioLength(FFTAudioSource audioInputStream, FFTCallBack back){
-        calcFFTParams();
-        createFilterBank();
-        filterBank.clear();
         if (audioInputStream==null){
             back.onError(new Exception("Не выбран источник аудио"));
             return -1;
@@ -267,6 +256,9 @@ public class FFT implements FFTBinStream{
         return size;
     }
     public  boolean preloadWave(FFTAudioSource audioInputStream, FFTCallBack back){
+        calcFFTParams();
+        createFilterBank();
+        filterBank.clear();
         int size = getAudioLength(audioInputStream, back);
         if (size == -1)
             return false;
@@ -536,7 +528,7 @@ public class FFT implements FFTBinStream{
     // Частота вызова на каждой октаве уменьшается (таблица коэффициентов)
     public void createFilterBank(){
         filterBank = new GTFilterBank();
-        filterBank.createGTFilterBank(pars.subToneCount());
+        filterBank.createGTFilterBank(pars);
         GTSpectrum = new FFTArray(filterBank.size());
         }
     public float []getGammatoneStatic(int note){       // Это ИСХОДНИК !!!!!!!
@@ -559,10 +551,10 @@ public class FFT implements FFTBinStream{
 
     private float F_SCALE = 3f;
     public float []getMultipleSpectrum(boolean multiple){
-        float out[] = logSpectrum.getOriginal();
+        float out[] = pars.logFreqMode() ? logSpectrum.getOriginal() : spectrum.getOriginal();
         float vv[] = GTSpectrum.getOriginal();
         for(int i=0;i<out.length;i++){
-            if (multiple)
+            if (!multiple)
                 out[i] *= vv[i];
             else
                 out[i] = (float)Math.sqrt(F_SCALE*F_SCALE*out[i]*out[i] + vv[i]*vv[i]);
