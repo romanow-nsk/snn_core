@@ -9,6 +9,8 @@ package romanow.snn_simulator.layer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import romanow.snn_simulator.GBL;
 import romanow.snn_simulator.I_Layer;
@@ -18,33 +20,69 @@ import romanow.snn_simulator.I_TextStream;
 import romanow.snn_simulator.I_TypeName;
 import romanow.snn_simulator.Token;
 import romanow.snn_simulator.UniException;
+import romanow.snn_simulator.fft.FFT;
 
 public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
+    class SmoothArray{
+        float data[];
+        SmoothArray(int size){
+            data = new float[size];
+            for(int i=0;i<size;i++)
+                data[i]=0;
+            }
+        void smoothOne(){
+            int size = data.length;
+            float out[] = new float[size];
+            out[0]=(float)( 0.5*(data[1]+data[0]));
+            for(int i=1;i<size-1;i++)
+                out[i] = (float)( 0.5*(0.5*(data[i-1]+data[i+1])+data[i]));
+            out[size-1]=(float)( 0.5*(data[size-2]+data[size-1]));
+            data = out;
+            }
+        void smooth(int count){
+            while (count-->0)
+                smoothOne();
+            }
+        }
     private String name="";
     private int count=0;
     private int size=0;
+    private boolean noPrevVal=true;
+    private boolean noReset=true;
     private I_Layer src=null;
     private float prev[]=null;
-    private float sumT[]=null;          // Сумма по времени
-    private float sum2T[]=null;         // Сумма квадратов по времени
-    private float sum2DiffF[]=null;     // Корреляция по частоте
-    private float sum2DiffT[]=null;     // Корреляция по времени
-    public void reset(){
-        prev = null;
-        size = src.size();
-        sumT=new float[size];
-        sum2T=new float[size];
-        sum2DiffF=new float[size];
-        sum2DiffT=new float[size];
-        for(int i=0;i<size;i++){
-            sumT[i]=0;
-            sum2T[i]=0;
-            sum2DiffT[i]=0;
-            sum2DiffF[i]=0;
+    private SmoothArray sumT=null;          // Сумма по времени
+    private SmoothArray sum2T=null;         // Сумма квадратов по времени
+    private SmoothArray sum2DiffF=null;     // Корреляция по частоте
+    private SmoothArray sum2DiffT=null;     // Корреляция по времени
+    public void reset() {
+        noReset=true;
+        }
+    public void lasyReset(float data[]){
+        if (!noReset)
+            return;
+        noReset=false;
+        noPrevVal=true;
+        prev = data;
+        size = data.length;
+        sumT=new SmoothArray(size);
+        sum2T=new SmoothArray(size);
+        sum2DiffF=new SmoothArray(size);
+        sum2DiffT=new SmoothArray(size);
             }
+    public void smooth(int steps){
+        sumT.smooth(steps);
+        sum2T.smooth(steps);
+        sum2DiffF.smooth(steps);
+        sum2DiffT.smooth(steps);
         }
     public LayerStatistic(I_Layer src, String name){
         this.src = src;
+        setObjectName(name);
+        reset();
+        }
+    public LayerStatistic(String name){
+        this.src = null;
         setObjectName(name);
         reset();
         }
@@ -53,15 +91,19 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
             System.out.println("Нет данных для статистики "+this.getObjectName());
             return;
             }
-        float data[] = src.getSpikes().clone();
+        addStatistic(src.getSpikes());
+        }
+    public void addStatistic(float src[]) throws UniException{
+        float data[] = src.clone();
+        lasyReset(data);
         for(int i=0;i<size;i++){
-            sumT[i]+=data[i];
-            sum2T[i]+=data[i]*data[i];
+            sumT.data[i]+=data[i];
+            sum2T.data[i]+=data[i]*data[i];
             if (prev!=null)
-                sum2DiffT[i]+=(data[i]-prev[i])*(data[i]-prev[i]);
+                sum2DiffT.data[i]+=(data[i]-prev[i])*(data[i]-prev[i]);
             if (i!=0 && i!=size-1){
-                sum2DiffF[i]+=(data[i]-data[i-1])*(data[i]-data[i-1]);
-                sum2DiffF[i]+=(data[i]-data[i+1])*(data[i]-data[i+1]);
+                sum2DiffF.data[i]+=(data[i]-data[i-1])*(data[i]-data[i-1]);
+                sum2DiffF.data[i]+=(data[i]-data[i+1])*(data[i]-data[i+1]);
                 }
             }
         prev = data;
@@ -89,10 +131,10 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
         }
     //--------------------------------------------------------------------------
     public float getDisp(){
-        return getMid(getDisps(sum2T));
+        return getMid(getDisps(sum2T.data));
         }
     public float[] getMids(){
-        float out[] = sumT.clone();
+        float out[] = sumT.data.clone();
         for(int i=0;i<size;i++){
             if (count==0)
                 out[i]=0;
@@ -105,19 +147,33 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
         return getMid(getMids());
         }
     public float[] getDisps(){
-        return getDisps(sum2T);
+        return getDisps(sum2T.data);
         }
     public float[] getDiffsF(){
-        return getDisps(sum2DiffF);
+        return getDisps(sum2DiffF.data);
         }
     public float getDiffF(){
         return getMid(getDiffsF());
         }
     public float[] getDiffsT(){
-        return getDisps(sum2DiffT);
+        return getDisps(sum2DiffT.data);
         }
     public float getDiffT(){
         return getMid(getDiffsT());
+        }
+    public ArrayList<Extreme> createExtrems(){
+        ArrayList<Extreme> out = new ArrayList<>();
+        for(int i=1;i<size-1;i++)
+            if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1])
+                out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/size)));
+        out.sort(new Comparator<Extreme>() {
+            @Override
+            public int compare(Extreme o1, Extreme o2) {
+                if (o1.value==o2.value) return 0;
+                return o1.value > o2.value ? -1 : 1;
+                }
+            });
+        return out;
         }
     //--------------------------------------------------------------------------
     @Override

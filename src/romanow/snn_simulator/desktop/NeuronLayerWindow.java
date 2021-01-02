@@ -5,6 +5,8 @@
  */
 package romanow.snn_simulator.desktop;
 
+import romanow.snn_simulator.fft.FFTParams;
+
 import javax.swing.JSlider;
 
 /**
@@ -45,5 +47,9 @@ public class NeuronLayerWindow extends LayerWindow {
     @Override
     public void paint(float spikes[]){
         panel.paint(spikes);
+    }
+    @Override
+    public void paint(float spikes[], FFTParams params){
+        panel.paint(spikes,params);
     }
 }

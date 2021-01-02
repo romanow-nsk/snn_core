@@ -18,7 +18,7 @@ import romanow.snn_simulator.gammatone.GPUGTFilterBank;
 public class FFT implements FFTBinStream{
     public final static int formatVersion=1;        // Версия формата
     public final static String formatSignature="CASA Spectrums Binary Data";
-    public final static float Ccontr = 33;          // Частота до контр-октавы
+    public final static double Ccontr = 32.703;     // Частота до контр-октавы
     public final static int Octaves = 10;           // Кол-во октав
     public final static int  Size0= 1024;           // 1024 базовая степень FFT
     public final static int sizeHZ = 44100;         // Частотный диапазон оцифровки
@@ -95,6 +95,12 @@ public class FFT implements FFTBinStream{
             default: out = ""+(i1-2)+" "+out; break;
             }
         return out;
+        }
+    public static double getNoteFreqByIndex(int idx){
+        return Ccontr * Math.pow(2, idx / 12.);
+        }
+    public static String getFullNoteNameByIndex(int idx){
+        return getShortNoteNameByIndex(idx) + " ("+ (int)getNoteFreqByIndex(idx)+")";
         }
     public static String getNoteNameByIndex(int idx){
         String out=noteList[idx%12]+" ";
@@ -231,13 +237,13 @@ public class FFT implements FFTBinStream{
         calcExp();
         }
     private void createSubToneIndexes(){
-        float c0 = Ccontr;
+        double c0 = Ccontr;
         int octSize = 12*pars.subToneCount();
         int out[]=new int[Octaves*octSize];
         int k=0;
         for(int i=0;i<10;i++,c0*=2){
             for(int j=0;j<octSize;j++,k++){
-                float tone = (float)(c0*Math.pow(2, ((float)j)/octSize));
+                double tone = c0*Math.pow(2, ((double)j)/octSize);
                 int idx0 = (int)(tone/stepHZLinear);
                 out[k] = idx0;
                 }
@@ -532,7 +538,7 @@ public class FFT implements FFTBinStream{
         GTSpectrum = new FFTArray(filterBank.size());
         }
     public float []getGammatoneStatic(int note){       // Это ИСХОДНИК !!!!!!!
-        float c0 = Ccontr;
+        double c0 = Ccontr;
         while(note >= 12){
             c0 *=2;
             note -=12;
@@ -549,7 +555,7 @@ public class FFT implements FFTBinStream{
         return  filterBank.getGammatone(wave, pars.procOver(), note, env);
         }
 
-    private float F_SCALE = 3f;
+    private double F_SCALE = 1.0;         // 3.0
     public float []getMultipleSpectrum(boolean multiple){
         float out[] = pars.logFreqMode() ? logSpectrum.getOriginal() : spectrum.getOriginal();
         float vv[] = GTSpectrum.getOriginal();
@@ -570,7 +576,7 @@ public class FFT implements FFTBinStream{
         long timeStart = new Date().getTime();
         gammaTones = new FFTArray(toneIndexes.length);
         float tmp[] = new float[wave.length];
-        float c0 = Ccontr;
+        double c0 = Ccontr;
         int octSize = 12*pars.subToneCount();
         int out[]=new int[Octaves*octSize];
         int k=0;
@@ -746,7 +752,7 @@ public class FFT implements FFTBinStream{
         }
 
 
-    public void binSave(FFTFileSource src, I_Notify view) {
+    public void binSave(FFTFileSource src, final I_Notify view) {
         try {
             System.out.println(this);
             String fspec = src.getFileSpec();

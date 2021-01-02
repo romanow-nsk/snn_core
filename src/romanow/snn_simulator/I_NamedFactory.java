@@ -5,6 +5,9 @@
  */
 package romanow.snn_simulator;
 
+import java.util.ArrayList;
+import java.util.Vector;
+
 /**
  *
  * @author romanow
@@ -12,4 +15,5 @@ package romanow.snn_simulator;
 public interface I_NamedFactory<T> {
     public String []createList();
     public T getByName(String name);
-}
+    public ArrayList<T> getFactoryContent();
+    }

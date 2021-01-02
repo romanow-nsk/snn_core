@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 import romanow.snn_simulator.fft.FFT;
 import romanow.snn_simulator.GBL;
+import romanow.snn_simulator.fft.FFTParams;
 
 /**
  *
@@ -41,6 +42,12 @@ public class NeuronLayerPanel extends JPanel{
         maxVal=0;
         cStep=0;
         nSteps=hh/stepDy;           // Кол-во шагов на графике
+        }
+    public void paint(float spikes[], FFTParams params){
+        if (params.logFreqMode())
+            paint(spikes,params.subToneCount());
+        else
+            paint(spikes);
         }
     public void paint(float spikes[],int subToneCount){
         Graphics gg = getGraphics();

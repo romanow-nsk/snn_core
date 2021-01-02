@@ -11,7 +11,7 @@ import romanow.snn_simulator.fft.FFT;
  *
  * @author romanow
  */
-public class LayerWindow extends javax.swing.JFrame implements I_SpectrumWindow{
+public abstract class LayerWindow extends javax.swing.JFrame implements I_SpectrumWindow{
     LayerWindowCallBack back=null;
     private boolean white=false;
     /**
@@ -30,7 +30,7 @@ public class LayerWindow extends javax.swing.JFrame implements I_SpectrumWindow{
         }
     public void reset(){
         }
-    public void paint(float spikes[], int subToneCount){   
+    public void paint(float spikes[], int subToneCount){
         }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,10 +80,8 @@ public class LayerWindow extends javax.swing.JFrame implements I_SpectrumWindow{
         this.back = back; 
         }
     @Override
-    public void paint(float[] val, String title) {
-        }
+    public void paint(float[] val, String title) {}
 
     @Override
-    public void paint(float[] val) {
-        }
+    public void paint(float[] val) {}
 }

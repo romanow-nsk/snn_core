@@ -8,7 +8,10 @@ package romanow.snn_simulator.desktop;
 import java.awt.Graphics;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+
+import romanow.snn_simulator.GBL;
 import romanow.snn_simulator.fft.FFT;
+import romanow.snn_simulator.fft.FFTParams;
 
 /**
  *
@@ -46,7 +49,7 @@ public class FFTLayerWindow extends LayerWindow{
                 masY=Ampl.getValue();
                 VAmpl.setText(""+masY);
                 if (last!=null)             // Перерисовать в новом масштабе
-                    paint(last, null);
+                    paint(last, "");
                 }
             });
         Ampl.setBounds(1060, hight-180, 30, 110);
@@ -62,11 +65,20 @@ public class FFTLayerWindow extends LayerWindow{
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 masX=Freq.getValue();
                 if (last!=null)             // Перерисовать в новом масштабе
-                    paint(last, null);
+                    paint(last, "");
                 }
             });
         Freq.setBounds(920, hight-30, 120, 23);
         add(Freq);
+        }
+
+    @Override
+    public void paint(float[] spikes, FFTParams params) {
+        GBL.notSupport();
+        }
+    @Override
+    public void paint(float spikes[], int subToneCount){
+        panel.paint(masX,masY,spikes,false,subToneCount);
         }
     @Override
     public void paint(FFT fft) {

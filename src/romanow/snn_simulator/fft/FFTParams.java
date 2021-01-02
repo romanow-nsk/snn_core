@@ -20,11 +20,12 @@ public class FFTParams implements FFTBinStream{
     private int procOver;                  // Процент перекрытия двух соседних окон
     private boolean logFreqMode;           // Октавный режим (true)
     private int subToneCount;              // Частот в полутоне
+    private double  F_SCALE=3.0;           // Коэффициент перемножения спектр*гамматон
     private boolean p_Cohleogram;          // Наличие кохлеограммы
     private boolean p_GPU;                 // GPU включен
     public FFTParams(int W, int procOver, boolean logFreqMode,
         int subToneCount, boolean p_Cohleogram, boolean p_GPU, 
-        boolean FFTWindowReduce,int GPUmode){
+        boolean FFTWindowReduce,int GPUmode, double f_SCALE){
         this.GPUmode = GPUmode;
         this.FFTWindowReduce = FFTWindowReduce;
         this.W = W;
@@ -33,6 +34,7 @@ public class FFTParams implements FFTBinStream{
         this.subToneCount = subToneCount;
         this.p_Cohleogram = p_Cohleogram;
         this.p_GPU = p_GPU;
+        F_SCALE = f_SCALE;
         }
     public FFTParams(int W, int procOver, int subToneCount, boolean FFTWindowReduce){
         GPUmode = 0;
@@ -60,6 +62,7 @@ public class FFTParams implements FFTBinStream{
         subToneCount=in.readInt();
         p_Cohleogram=in.readBoolean();
         p_GPU=in.readBoolean();
+        F_SCALE=in.readDouble();
         }
 
     @Override
@@ -72,6 +75,7 @@ public class FFTParams implements FFTBinStream{
         out.writeInt(subToneCount);
         out.writeBoolean(p_Cohleogram);
         out.writeBoolean(p_GPU);
+        out.writeDouble(F_SCALE);
         }
 
     public int GPUmode() {

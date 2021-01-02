@@ -74,6 +74,14 @@ public class FFTPanel extends JPanel{
                 gg.drawLine(pp, hh-1, pp, 0);                    
                 }                               
             }
+        else{
+            for(int i=0;i<vals.length;i+=10){
+                gg.setColor(i%100==0 ? Color.red : Color.gray);
+                int pp = i*dx;
+                if (pp>=ww) break;
+                gg.drawLine(pp, hh-1, pp, 0);
+                }
+        }
         gg.setColor(fore);
         for(int i=0;i<vals.length; i++){
             int bb = i*dx;

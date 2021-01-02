@@ -6,6 +6,7 @@
 package romanow.snn_simulator.desktop;
 
 import romanow.snn_simulator.fft.FFT;
+import romanow.snn_simulator.fft.FFTParams;
 
 /**
  *
@@ -13,6 +14,7 @@ import romanow.snn_simulator.fft.FFT;
  */
 public interface I_SpectrumWindow {
     public void paint(float spikes[], int subToneCount);
+    public void paint(float spikes[], FFTParams params);
     public void paint(FFT fft);
     public void paint(float[] val, String title);
     public void paint(float[] val);

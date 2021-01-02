@@ -5,15 +5,14 @@
  */
 package romanow.snn_simulator.desktop;
 
-import com.sun.scenario.Settings;
 import romanow.snn_simulator.I_NeuronStep;
 import romanow.snn_simulator.I_NetParams;
-import romanow.snn_simulator.layer.NL_DigitalSource;
+import romanow.snn_simulator.layer.*;
 import romanow.snn_simulator.neuron.N_BaseNeuron;
 import romanow.snn_simulator.GBL;
 import java.awt.FileDialog;
 import java.io.*;
-import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -27,16 +26,11 @@ import org.apache.commons.math3.complex.Complex;
 import romanow.snn_simulator.I_LayerModel;
 import romanow.snn_simulator.TypeFactory;
 import romanow.snn_simulator.fft.AudioSourceFactory;
-import romanow.snn_simulator.fft.FFTArray;
 import romanow.snn_simulator.lang.ModelCreator;
 import romanow.snn_simulator.lang.NLM_Constructive;
-import romanow.snn_simulator.layer.LayerFactory;
-import romanow.snn_simulator.layer.LayerStatistic;
-import romanow.snn_simulator.layer.NL_Integrate;
 import romanow.snn_simulator.model.ModelFactory;
 import romanow.snn_simulator.model.NLM_Proxy;
 import romanow.snn_simulator.neuron.NeuronFactory;
-import static java.lang.Thread.sleep;
 import romanow.snn_simulator.fft.FFTAudioTextFile;
 import romanow.snn_simulator.fft.FFTFileSource;
 import romanow.snn_simulator.fft.FFTParams;
@@ -105,6 +99,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private BoxFactory<FFTAudioSource> sourceFactory;
     private ModelFactory factory;
     private LayerStatistic selectedStat = null;
+    private LayerStatistic inputStat = new LayerStatistic("Входные данные");
     I_NetParams paramsAdapter = new I_NetParams(){
         @Override
         public int getSynapsesCount() {
@@ -263,7 +258,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         }
     public FFTView() {
         initComponents();
-        this.setBounds(30,20, 850, 680);
+        this.setBounds(30,20, 900, 680);
         setTitle("CASA");
         FileName.setEditable(false);
         neuronFactory = new BoxFactory<N_BaseNeuron>(new NeuronFactory(),NeuronId,
@@ -298,6 +293,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 });    
         loadSettings();
         setMenuState();
+        }
+    public void clearStatistic(){
+        inputStat.reset();
+        if (statFactory==null)
+            return;
+        for (LayerStatistic stat : statFactory.getFactory().getFactoryContent())
+            stat.reset();
         }
     private void setStatList(){
         setStatList(null);
@@ -355,6 +357,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             p_OutAmpl = out.readBoolean();
             p_FFTWindowReduce = out.readBoolean();
             p_GPUmode = out.readInt();
+            KMultiple.setText(""+out.readDouble());
             setViewState();
             setMenuState();
             } catch (Exception ee){
@@ -401,6 +404,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             out.writeBoolean(p_OutAmpl);
             out.writeBoolean(p_FFTWindowReduce);
             out.writeInt(p_GPUmode);
+            out.writeDouble(F_SCALA());
             } catch (Exception ee){
                 toLog(true,"Настройки не сохранены");
                 try { if (out!=null) out.close(); } catch (Exception e2){}
@@ -460,7 +464,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         jLabel16 = new javax.swing.JLabel();
         LogLevel = new javax.swing.JComboBox();
         jLabel17 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        ShowStatistic = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         Statistics = new javax.swing.JComboBox();
         jToggleButton1 = new javax.swing.JToggleButton();
@@ -468,6 +472,18 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         GPUmode = new javax.swing.JComboBox<>();
         jLabel20 = new javax.swing.JLabel();
         PlayMPX = new javax.swing.JButton();
+        InputStatistic = new javax.swing.JButton();
+        KMultiple = new javax.swing.JTextField();
+        jSeparator2 = new javax.swing.JSeparator();
+        KSmooth = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        StatSmooth = new javax.swing.JCheckBox();
+        StatDiffT = new javax.swing.JCheckBox();
+        StatMiddle1 = new javax.swing.JCheckBox();
+        StatDiff = new javax.swing.JCheckBox();
+        StatDiffF = new javax.swing.JCheckBox();
+        jLabel22 = new javax.swing.JLabel();
+        FirstN = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         LoadModel = new javax.swing.JMenuItem();
@@ -587,7 +603,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(NSynapses);
-        NSynapses.setBounds(130, 460, 30, 25);
+        NSynapses.setBounds(210, 460, 30, 25);
 
         jLabel4.setText("Время (мс)");
         getContentPane().add(jLabel4);
@@ -600,28 +616,27 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(MaxAmpl);
-        MaxAmpl.setBounds(60, 260, 50, 25);
+        MaxAmpl.setBounds(10, 260, 50, 25);
 
         jLabel5.setText("FFT+GTF");
         getContentPane().add(jLabel5);
         jLabel5.setBounds(230, 70, 60, 14);
 
-        jButton2.setText("---");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(5, 220, 45, 30);
+        jButton2.setBounds(70, 260, 30, 30);
 
         KCompress.setText("15");
         getContentPane().add(KCompress);
-        KCompress.setBounds(20, 190, 30, 25);
+        KCompress.setBounds(10, 190, 30, 25);
 
         jLabel8.setText("Пар соседей");
         getContentPane().add(jLabel8);
-        jLabel8.setBounds(180, 465, 90, 14);
+        jLabel8.setBounds(130, 480, 90, 14);
 
         SCompress.setMaximum(30);
         SCompress.setValue(15);
@@ -645,11 +660,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
         jLabel9.setText("Вид фильтрации");
         getContentPane().add(jLabel9);
-        jLabel9.setBounds(20, 565, 100, 14);
+        jLabel9.setBounds(10, 565, 100, 14);
 
         FilterDeep.setText("0");
         getContentPane().add(FilterDeep);
-        FilterDeep.setBounds(120, 530, 30, 25);
+        FilterDeep.setBounds(110, 530, 30, 25);
 
         NNeightbors.setText("2");
         NNeightbors.addActionListener(new java.awt.event.ActionListener() {
@@ -685,7 +700,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(KAmpl);
-        KAmpl.setBounds(150, 530, 140, 23);
+        KAmpl.setBounds(150, 530, 130, 23);
 
         jLabel11.setText("режим GPU ");
         getContentPane().add(jLabel11);
@@ -702,7 +717,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(FilterMode);
-        FilterMode.setBounds(120, 560, 160, 25);
+        FilterMode.setBounds(110, 560, 170, 25);
 
         Gammatone.setMaximum(119);
         Gammatone.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -718,11 +733,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(Gammatone);
-        Gammatone.setBounds(150, 500, 140, 23);
+        Gammatone.setBounds(150, 500, 130, 23);
 
         jLabel12.setText("Вх. сигналов");
         getContentPane().add(jLabel12);
-        jLabel12.setBounds(60, 465, 70, 14);
+        jLabel12.setBounds(130, 460, 70, 14);
 
         NGammatone.setEditable(false);
         NGammatone.setText("C контр");
@@ -732,7 +747,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(NGammatone);
-        NGammatone.setBounds(60, 500, 90, 25);
+        NGammatone.setBounds(60, 500, 80, 25);
 
         jLabel3.setText("% перекрытия");
         getContentPane().add(jLabel3);
@@ -763,7 +778,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
         jLabel2.setText("Ампл.");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(20, 265, 50, 14);
+        jLabel2.setBounds(10, 290, 50, 14);
 
         jLabel10.setText("Трасса");
         getContentPane().add(jLabel10);
@@ -781,11 +796,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getContentPane().add(jLabel15);
         jLabel15.setBounds(10, 430, 70, 14);
         getContentPane().add(Mes);
-        Mes.setBounds(300, 10, 520, 570);
+        Mes.setBounds(470, 10, 410, 570);
 
         jLabel16.setText("Глубина фильтр.");
         getContentPane().add(jLabel16);
-        jLabel16.setBounds(20, 535, 100, 14);
+        jLabel16.setBounds(10, 540, 100, 14);
 
         LogLevel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Все", "Информация", "Предупреждения", "Ошибки", "Фатальные" }));
         LogLevel.addItemListener(new java.awt.event.ItemListener() {
@@ -800,21 +815,21 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getContentPane().add(jLabel17);
         jLabel17.setBounds(10, 310, 50, 14);
 
-        jButton3.setText("??");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        ShowStatistic.setText("<");
+        ShowStatistic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                ShowStatisticActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3);
-        jButton3.setBounds(5, 460, 43, 30);
+        getContentPane().add(ShowStatistic);
+        ShowStatistic.setBounds(240, 420, 40, 30);
 
         jLabel18.setText("Слой");
         getContentPane().add(jLabel18);
         jLabel18.setBounds(10, 400, 50, 14);
 
         getContentPane().add(Statistics);
-        Statistics.setBounds(90, 420, 190, 25);
+        Statistics.setBounds(90, 420, 140, 25);
 
         jToggleButton1.setText("*");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -823,7 +838,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         });
         getContentPane().add(jToggleButton1);
-        jToggleButton1.setBounds(5, 500, 40, 30);
+        jToggleButton1.setBounds(10, 500, 40, 30);
 
         jLabel19.setText("Дискр. ");
         getContentPane().add(jLabel19);
@@ -845,6 +860,61 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         });
         getContentPane().add(PlayMPX);
         PlayMPX.setBounds(10, 65, 130, 23);
+
+        InputStatistic.setText("Стат.входа");
+        InputStatistic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InputStatisticActionPerformed(evt);
+            }
+        });
+        getContentPane().add(InputStatistic);
+        InputStatistic.setBounds(300, 80, 150, 23);
+
+        KMultiple.setText("3.0");
+        getContentPane().add(KMultiple);
+        KMultiple.setBounds(420, 10, 30, 25);
+
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        getContentPane().add(jSeparator2);
+        jSeparator2.setBounds(288, 10, 10, 560);
+
+        KSmooth.setText("50");
+        getContentPane().add(KSmooth);
+        KSmooth.setBounds(420, 40, 30, 25);
+
+        jLabel21.setText("Первые N макс.");
+        getContentPane().add(jLabel21);
+        jLabel21.setBounds(300, 200, 100, 20);
+
+        StatSmooth.setSelected(true);
+        StatSmooth.setText("Сглаживание");
+        getContentPane().add(StatSmooth);
+        StatSmooth.setBounds(300, 40, 110, 23);
+
+        StatDiffT.setText("Неравн.по времени");
+        getContentPane().add(StatDiffT);
+        StatDiffT.setBounds(300, 170, 140, 23);
+
+        StatMiddle1.setSelected(true);
+        StatMiddle1.setText("Среднее");
+        getContentPane().add(StatMiddle1);
+        StatMiddle1.setBounds(300, 110, 140, 23);
+
+        StatDiff.setText("СКО");
+        getContentPane().add(StatDiff);
+        StatDiff.setBounds(300, 130, 140, 23);
+
+        StatDiffF.setText("Неравн. по частоте");
+        getContentPane().add(StatDiffF);
+        StatDiffF.setBounds(300, 150, 140, 23);
+
+        jLabel22.setText("Спектр/гамматон");
+        getContentPane().add(jLabel22);
+        jLabel22.setBounds(300, 10, 110, 20);
+
+        FirstN.setText("5");
+        getContentPane().add(FirstN);
+        FirstN.setBounds(420, 200, 30, 25);
 
         jMenu2.setText("Модель");
 
@@ -1180,6 +1250,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
 
     private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
+        clearStatistic();
         runToPlay(play);
     }//GEN-LAST:event_RunActionPerformed
     private I_NeuronStep stepCB = new I_NeuronStep(){       // Шаг модели
@@ -1197,6 +1268,9 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private boolean needCohle(){
         return p_Cohleogram || (modelFactory.getSelected()!=null  && p_ModelSourceType!=0);
         }
+    private double F_SCALA(){
+        return Double.parseDouble(KMultiple.getText());
+    }
     //--------------------------------------------------------------------------
     private FFTCallBack back = new FFTCallBack(){
                 @Override
@@ -1239,6 +1313,19 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                     cohle = fft.getGTSpectrum();
                                     multiple = fft.getMultipleSpectrum(p_MultipleSK);
                                     }
+                                switch(ModelSourceType.getSelectedIndex()){
+                                    case 0:
+                                        inputStat.addStatistic(fft.isLogFreqMode() ? spectrum : lineSpectrum);
+                                        break;
+                                    case 1:
+                                        if (needCohle())
+                                            inputStat.addStatistic(cohle);
+                                        break;
+                                    case 2:
+                                        if (needCohle())
+                                            inputStat.addStatistic(multiple);
+                                        break;
+                                    }
                                 if (panels[1] != null){
                                     if (fft.isLogFreqMode())
                                         panels[1].paint(spectrum, fft.getSubToneCount());
@@ -1248,18 +1335,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                 if (panels[0] != null)
                                     panels[0].paint(fft);
                                 if (panels[4] != null && fft.validGammatone())        // Огибающая спектра  = true
-                                    panels[4].paint(fft.getGammatone(p_GTFNote, false), null);
-                                if (panels[5] != null && cohle != null){
-                                    if (fft.isLogFreqMode())
-                                        panels[5].paint(cohle, fft.getSubToneCount());
-                                    else
-                                        panels[5].paint(cohle);
-                                    }
+                                    panels[4].paint(fft.getGammatone(p_GTFNote, false), "");
+                                if (panels[5] != null && cohle != null)
+                                    panels[5].paint(cohle, fft.getParams());
                                 if (panels[6] != null){
-                                    if (fft.isLogFreqMode())
-                                        panels[6].paint(multiple, fft.getSubToneCount());
-                                    else
-                                        panels[6].paint(multiple);
+                                    panels[6].paint(multiple, fft.getParams());
                                     }
                                 fft.addCount(6);
                                 if (modelFactory.getSelected() != null) {
@@ -1269,17 +1349,17 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                             src = cohle;
                                         else
                                             src = multiple;
-                                    }
+                                        }
                                     out = model.step(src, stepCB);
                                     fft.addCount(5);
                                     if (p_PlayFilter) {
                                         float vv[] = fft.convertToWave(out, filters[p_FilterMode]);
                                         player.addToPlay(vv, p_OverProc, 0.1F);
-                                    }
+                                        }
                                     if (panels[3] != null) {
                                         float bb[] = fft.getFilteredSpectrum(out, filters[p_FilterMode]);
                                         panels[3].paint(bb, fft.getSubToneCount());
-                                    }
+                                        }
                                     if (panels[2] != null)
                                         panels[2].paint(out, model.getSubToneCount());
                                     if (panels[8] != null)
@@ -1307,7 +1387,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                     if (delay <= 0)
                                         toLog("Блок " + nBlock + " играет быстрее на " + (-delay));
                                     else
-                                        sleep(delay);
+                                        Thread.sleep(delay);
                                 } else {
                                     //int t2 = (int)(calcMS+(new Date().getTime()-tt));
                                     //int delay = (int)(msOnStep-t2);
@@ -1317,7 +1397,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                     if (delay <= 0)
                                         toLog("Блок " + nBlock + " задержка " + tt2 + ">" + msOnStep);
                                     else
-                                        sleep(delay);
+                                        Thread.sleep(delay);
                                 }
                             } catch (InterruptedException ex) {
                             }
@@ -1368,7 +1448,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc,
                         p_LogFreq,p_SubToneCount,
                         needCohle(),
-                        p_GPU,p_FFTWindowReduce,p_GPUmode));
+                        p_GPU,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
                     if (panels[1] == null && p_SrcSpectrum){
                         panels[1] = new NeuronLayerWindow(0,FFTView.this,600,"Исходный спектр",p_White);        
                         }
@@ -1674,7 +1754,56 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         p_LogLevel = LogLevel.getSelectedIndex();
     }//GEN-LAST:event_LogLevelItemStateChanged
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+    private void showStatistic(LayerStatistic stat){
+        String sName = stat.getName();
+        toLog("Отсчетов:"+stat.getCount());
+        float mid = stat.getMid();
+        toLog("Среднее:"+mid);
+        toLog("Приведенное станд.откл:"+stat.getDisp()/mid);
+        toLog("Приведенная неравн.по T:"+stat.getDiffT()/mid);
+        toLog("Приведенная неравн.по F:"+stat.getDiffF()/mid);
+        int subTOneCount = fft.isLogFreqMode() ? fft.getSubToneCount() : 0;
+        if (StatSmooth.isSelected())
+            stat.smooth(Integer.parseInt(KSmooth.getText()));
+        if (!p_GraphFX){
+            int subTone = fft.getSubToneCount();
+            FFTLayerWindow ff;
+            if (StatMiddle1.isSelected()){
+                ff = new FFTLayerWindow(11,FFTView.this,350,sName+" Приведенное станд. отклонение",true,subTone,p_White);
+                ff.paint(stat.getDisps(),0);
+                }
+            if (StatDiff.isSelected()){
+                ff = new FFTLayerWindow(10,FFTView.this,350,sName+" Среднее",true,subTone,p_White);
+                ff.paint(stat.getMids(),0);
+                }
+            if (StatDiffT.isSelected()){
+                ff = new FFTLayerWindow(12,FFTView.this,350,sName+" Приведенная неравн.по T",true,subTone,p_White);
+                ff.paint(stat.getDiffsT(),0);
+                }
+            if (StatDiffF.isSelected()){
+                ff = new FFTLayerWindow(13,FFTView.this,350,sName+" Приведенная неравн.по F",true,subTone,p_White);
+                ff.paint(stat.getDiffsF(),0);
+                }
+            }
+        else{
+            if (panels[7]==null){
+                panels[7] = new LineGraphicFrame(this,fft.getParams());
+                }
+            if (StatMiddle1.isSelected())
+                panels[7].paint(stat.getMids(), sName+" Среднее");
+            if (StatDiff.isSelected())
+                panels[7].paint(stat.getDisps(), sName+" Приведенное станд. отклонение");
+            if (StatDiffT.isSelected())
+                panels[7].paint(stat.getDiffsT(), sName+" Приведенная неравн.по T");
+            if (StatDiffF.isSelected())
+                panels[7].paint(stat.getDiffsF(), sName+" Приведенная неравн.по F");
+            panels[7].setVisible(true);
+            panels[7].repaint();
+            }
+        }
+
+    private void ShowStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowStatisticActionPerformed
         if (model==null){
             toLog(true,"Нет модели");
             return;
@@ -1684,36 +1813,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             toLog(true,"Нет статистики");
             return;
             }
-        String sName = stat.getName();
-        toLog("Отсчетов:"+stat.getCount());
-        float mid = stat.getMid();
-        toLog("Среднее:"+mid);
-        toLog("Приведенное станд.откл:"+stat.getDisp()/mid);
-        toLog("Приведенная неравн.по T:"+stat.getDiffT()/mid);
-        toLog("Приведенная неравн.по F:"+stat.getDiffF()/mid);
-        if (!p_GraphFX){
-            int subTone = fft.getSubToneCount();
-            FFTLayerWindow ff = new FFTLayerWindow(11,FFTView.this,350,sName+" Приведенное станд. отклонение",true,subTone,p_White);
-            ff.paint(stat.getDisps());
-            ff = new FFTLayerWindow(10,FFTView.this,350,sName+" Среднее",true,subTone,p_White);
-            ff.paint(stat.getMids());
-            ff = new FFTLayerWindow(12,FFTView.this,350,sName+" Приведенная неравн.по T",true,subTone,p_White);
-            ff.paint(stat.getDiffsT());
-            ff = new FFTLayerWindow(13,FFTView.this,350,sName+" Приведенная неравн.по F",true,subTone,p_White);
-            ff.paint(stat.getDiffsF());
-            }
-        else{
-            if (panels[7]==null){
-                panels[7] = new LineGraphicFrame(this,fft.getSubToneCount());
-                }
-            panels[7].paint(stat.getDiffsT(), sName+" Приведенная неравн.по T");
-            panels[7].paint(stat.getDiffsF(), sName+" Приведенная неравн.по F");
-            panels[7].paint(stat.getDisps(), sName+" Приведенное станд. отклонение");
-            panels[7].paint(stat.getMids(), sName+" Среднее");
-            panels[7].setVisible(true);
-            panels[7].repaint();
-            }
-    }//GEN-LAST:event_jButton3ActionPerformed
+        showStatistic(stat);
+    }//GEN-LAST:event_ShowStatisticActionPerformed
 
     private void ModelIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModelIdActionPerformed
         // TODO add your handling code here:
@@ -1754,7 +1855,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc,
                     p_LogFreq,p_SubToneCount,
                     needCohle(),
-                    p_GPU,p_FFTWindowReduce,p_GPUmode));
+                    p_GPU,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
                 if (convertMode)
                     fft.preloadFullCohleogramm(src, back);
                 else
@@ -1830,13 +1931,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         };
 
     private void ExportBinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBinActionPerformed
-        String fname = getInputFileName("Конвертер в mpx","wav",null);
+        final String fname = getInputFileName("Конвертер в mpx","wav",null);
         if (fname==null) return;
         FFTAudioFile audioFile = new FFTAudioFile();
         if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fname,44100, emptyCallBack))
             return;
         fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc, true,p_SubToneCount,
-                true, false,p_FFTWindowReduce,p_GPUmode));
+                true, false,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
         if (!fft.preloadWave(audioFile,emptyCallBack))
             return;
         fft.preloadFullSpectrum(false,audioFile,emptyCallBack);
@@ -1870,6 +1971,24 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     }
                 });
     }//GEN-LAST:event_PlayMPXActionPerformed
+
+    private void InputStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputStatisticActionPerformed
+        showStatistic(inputStat);
+        ArrayList<Extreme> list = inputStat.createExtrems();
+        int nFirst = Integer.parseInt(FirstN.getText());
+        int count = nFirst < list.size() ? nFirst : list.size();
+        Extreme extreme = list.get(0);
+        double val0 = extreme.value;
+        toLog(String.format("Макс=%6.4f f=%d гц",extreme.value,(int)extreme.freq));
+        double sum=0;
+        for(int i=1; i<count;i++){
+            extreme = list.get(i);
+            double proc = extreme.value*100/val0;
+            sum+=proc;
+            toLog(String.format("Макс=%6.4f f=%d гц %d%% к первому",extreme.value,(int)extreme.freq,(int)proc));
+            }
+        toLog(String.format("Средний - %d%% к первому",(int)(sum/(count-1))));
+    }//GEN-LAST:event_InputStatisticActionPerformed
 
 
     public String getInputFileName(String title, final String defName, String defDir){
@@ -1962,13 +2081,17 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JTextField FileName;
     private javax.swing.JTextField FilterDeep;
     private javax.swing.JComboBox FilterMode;
+    private javax.swing.JTextField FirstN;
     private javax.swing.JComboBox<String> GPUmode;
     private javax.swing.JLabel GammaLabel;
     private javax.swing.JSlider Gammatone;
     private javax.swing.JMenu Info;
     private javax.swing.JMenuItem InfoGPU;
+    private javax.swing.JButton InputStatistic;
     private javax.swing.JSlider KAmpl;
     private javax.swing.JTextField KCompress;
+    private javax.swing.JTextField KMultiple;
+    private javax.swing.JTextField KSmooth;
     private javax.swing.JLabel LCompress;
     private javax.swing.JLabel LCompress1;
     private javax.swing.JComboBox LayerId;
@@ -2009,6 +2132,12 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JCheckBoxMenuItem SettingRealTime;
     private javax.swing.JCheckBoxMenuItem SettingRepeat;
     private javax.swing.JMenu Settings;
+    private javax.swing.JButton ShowStatistic;
+    private javax.swing.JCheckBox StatDiff;
+    private javax.swing.JCheckBox StatDiffF;
+    private javax.swing.JCheckBox StatDiffT;
+    private javax.swing.JCheckBox StatMiddle1;
+    private javax.swing.JCheckBox StatSmooth;
     private javax.swing.JCheckBoxMenuItem StatisticView;
     private javax.swing.JComboBox Statistics;
     private javax.swing.JMenuItem TextToWaveConvert;
@@ -2022,7 +2151,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JCheckBoxMenuItem ViewSoucrceSpector;
     private javax.swing.JCheckBoxMenuItem WhiteBack;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -2035,6 +2163,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2045,6 +2175,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JMenu Вид;
     private javax.swing.JMenu Операции;

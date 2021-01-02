@@ -22,6 +22,7 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Tooltip;
 import romanow.snn_simulator.GBL;
 import romanow.snn_simulator.fft.FFT;
+import romanow.snn_simulator.fft.FFTParams;
 import romanow.snn_simulator.statistic.StatCell;
 
 /**
@@ -53,17 +54,19 @@ public class LineGraphicFrame extends LayerWindow{
         data.add(gg);
         }
     private Vector<Graphic> data = new Vector();
+    private FFTParams params;
     private LayerWindowCallBack back=null;
     private Color backColor = new Color(240,240,240);
     private Color foreColor = Color.BLACK;
-    LineChart<String, Number> lineChart;
+    LineChart<?, Number> lineChart;
     private int subToneCount=1;
     public LineGraphicFrame(){
         super("Статистика");
         }
-    public LineGraphicFrame(LayerWindowCallBack back, int subToneCount) {
+    public LineGraphicFrame(LayerWindowCallBack back, FFTParams params0) {
         super("Статистика");
-        this.subToneCount = subToneCount;
+        params = params0;
+        subToneCount = params.subToneCount();
         initComponents();
         this.back = back;
         final JFXPanel fxPanel = new JFXPanel();
@@ -82,9 +85,15 @@ public class LineGraphicFrame extends LayerWindow{
 
     private void initFX(JFXPanel fxPanel){
         CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis xxAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Тон");
-        lineChart =  new LineChart<String, Number>(xAxis, yAxis);
+        if (params.logFreqMode()){
+            lineChart =  new LineChart<String, Number>(xAxis, yAxis);
+            }
+        else{
+            lineChart =  new LineChart<Number, Number>(xxAxis, yAxis);
+            }
         lineChart.setTitle("Статистика слоев");
         Scene scene = new Scene(lineChart, 1100, 600);
         fxPanel.setScene(scene);
@@ -95,6 +104,12 @@ public class LineGraphicFrame extends LayerWindow{
         }    
     //--------------------------------------------------------------------------
     public void paintOne(Graphic stat){
+        if (params.logFreqMode())
+            paintOneLog(stat);
+        else
+            paintOneLinear(stat);
+        }
+    public void paintOneLog(Graphic stat){
         XYChart.Series series = new XYChart.Series();
         float data[] = stat.vals;
         series.setName(stat.title);
@@ -109,7 +124,7 @@ public class LineGraphicFrame extends LayerWindow{
             if (j%subToneCount!=0)
                 ss=""+j;
             else
-                ss=FFT.getShortNoteNameByIndex(j/subToneCount);
+                ss=FFT.getFullNoteNameByIndex(j/subToneCount);
             XYChart.Data<String, Float> item = new XYChart.Data<String, Float>(ss, data[j]);
             dd.add(item);
             }
@@ -120,8 +135,8 @@ public class LineGraphicFrame extends LayerWindow{
             final Node node = item.getNode(); 
             final float vv = data[ii];
             //------------------ Наведение мыши ----------------------------
-            String ss = FFT.getShortNoteNameByIndex(ii/subToneCount)+
-                "/"+ii%subToneCount+"="+put6(vv);
+            String ss = FFT.getFullNoteNameByIndex(ii/subToneCount)+
+                "/"+ii%subToneCount+"="+String.format("%6.4f",vv);
             Tooltip.install(node, new Tooltip(ss));
             node.setOnMouseEntered(new EventHandler<Event>() {
                 @Override
@@ -131,16 +146,51 @@ public class LineGraphicFrame extends LayerWindow{
                 });
             //Удаление класса после покидание мыши
             node.setOnMouseExited(new EventHandler<Event>() {
-         	@Override
-          	public void handle(Event event) {
+         	    @Override
+          	    public void handle(Event event) {
                 node.getStyleClass().remove("onHover");
                 }});
+                //--------------------------------------------------------------
+            }
+        }
+
+    public void paintOneLinear(Graphic stat) {
+        XYChart.Series series = new XYChart.Series();
+        float data[] = stat.vals;
+        series.setName(stat.title);
+        ObservableList dd = series.getData();
+        for (int j = 2; j < data.length/2; j++) {               // Первое тупо отсечь !!!!!!!!!!!!!!!!!!!!!
+            int ff = (int)((j+1.0)*FFT.sizeHZ)/data.length;
+            XYChart.Data<Integer, Double> item = new XYChart.Data<Integer, Double>(ff, (double)data[j]);
+            dd.add(item);
+            }
+        lineChart.getData().add(series);
+        //----------- Node появляются только после добавления серии !!!!!!!!!!!!
+        for (int ii = 0; ii < dd.size(); ii++) {
+            XYChart.Data<Integer, Double> item = (XYChart.Data<Integer, Double>) dd.get(ii);
+            final Node node = item.getNode();
+            final float vv = data[ii];
+            final String x0 = ""+(int)((ii+1.0)*FFT.sizeHZ/data.length);
+            //------------------ Наведение мыши ----------------------------
+            Tooltip.install(node, new Tooltip(x0 +"=>"+ String.format("%6.4f",vv)));
+            node.setOnMouseEntered(new EventHandler<Event>() {
+                @Override
+                public void handle(javafx.event.Event event) {
+                    node.getStyleClass().add("onHover");
+                    }
+                });
+            //Удаление класса после покидание мыши
+            node.setOnMouseExited(new EventHandler<javafx.event.Event>() {
+                @Override
+                public void handle(Event event) {
+                    node.getStyleClass().remove("onHover");
+                }
+            });
             //--------------------------------------------------------------
             }
         }
 
-
-    public void addStatistic(final Graphic stat){
+        public void addStatistic(final Graphic stat){
         addOrReplace(stat);
         createStatList();
         }
@@ -228,6 +278,7 @@ public class LineGraphicFrame extends LayerWindow{
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (back!=null)
             back.release(this);
+        dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -252,7 +303,7 @@ public class LineGraphicFrame extends LayerWindow{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                lineChart.getData().clear(); 
+                lineChart.getData().clear();
                 }
             });
         }
@@ -272,7 +323,7 @@ public class LineGraphicFrame extends LayerWindow{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                Series<String,Number> xx = lineChart.getData().remove(idx2); 
+                Series<?,Number> xx = lineChart.getData().remove(idx2);
                 paintOne(zz);
                 //lineChart.getData().add(xx); - ТАК НЕ БЕРЕТ ПОВТОРНО
                 }
@@ -323,7 +374,14 @@ public class LineGraphicFrame extends LayerWindow{
 
     @Override
     public void paint(float[] spikes, int subToneCount) {
+        GBL.notSupport();
         }
+
+    @Override
+    public void paint(float[] spikes, FFTParams params){
+        GBL.notSupport();
+        }
+
     @Override
     public void paint(FFT fft) {
         GBL.notSupport();

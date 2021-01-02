@@ -5,6 +5,7 @@
  */
 package romanow.snn_simulator;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Vector;
 import org.reflections.Reflections;
@@ -14,7 +15,7 @@ import org.reflections.Reflections;
  * @author romanow
  */
 public class TypeFactory<T extends I_Name> implements I_NamedFactory<T> {
-    private Vector<T> list = new Vector();
+    private ArrayList<T> list = new ArrayList<>();
     public void add(T val){
         list.add(val);
         }
@@ -37,6 +38,9 @@ public class TypeFactory<T extends I_Name> implements I_NamedFactory<T> {
                 return vv;
             }
         return null;
+        }
+    public ArrayList<T>  getFactoryContent(){
+        return list;
         }
     //---------- Перебор классов в пакете и заполнение фабрики ----------------
     public void generate(String pkgIn, Class base){

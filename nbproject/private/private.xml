@@ -5,6 +5,7 @@
         <group>
             <file>file:/D:/CASA_Java/snn_core/src/romanow/powerline/FFT100.java</file>
             <file>file:/D:/CASA_Java/snn_core/src/romanow/snn_simulator/desktop/FFTView.java</file>
+            <file>file:/D:/CASA_Java/snn_core/src/romanow/snn_simulator/fft/FFT.java</file>
         </group>
     </open-files>
 </project-private>

@@ -42,7 +42,7 @@ public class GTFilterBank {
         params = params0;
         int subToneCount = params.subToneCount();
         if (params.logFreqMode()) {
-            float c0 = Ccontr;
+            double c0 = Ccontr;
             int octSize = 12 * subToneCount;
             int dd = 0;
             filterBank = new GTFilter[Octaves * octSize];

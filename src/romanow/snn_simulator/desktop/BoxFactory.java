@@ -24,6 +24,7 @@ public class BoxFactory<T extends I_Name>{
     public T getSelected(){
         return factory.getByName(box.getSelectedItem().toString());
         }
+    public I_NamedFactory<T> getFactory(){ return factory; }
     public BoxFactory(I_NamedFactory<T> factory,JComboBox box,final BoxFactoryCallBack<T> back){
         this.box = box;
         this.factory = factory;
