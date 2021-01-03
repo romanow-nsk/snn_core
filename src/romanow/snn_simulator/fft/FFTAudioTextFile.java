@@ -23,7 +23,6 @@ public class FFTAudioTextFile implements FFTFileSource{
     private int sz=0;
     private float data[]=null;
     private int cnum;
-    private int repeat=100;     // Повторять по кругу
     @Override
     public void enableToPlay(boolean play) {
         }
@@ -55,7 +54,37 @@ public class FFTAudioTextFile implements FFTFileSource{
         for(int i=0;i<cc.length;i++){   
             wav_file.write((byte)cc[i]);
             }
-        }       
+        }
+    public float[]  getData(){
+        return data.clone();
+        }
+    public void readData(BufferedReader AudioFile) throws IOException {
+        String in;
+        for(int i=0;i<10;i++)           // 10 первых строк пропустить
+            in = AudioFile.readLine();
+        sz = Integer.parseInt(AudioFile.readLine());
+        data = new float[sz];
+        float mid=0,min=data[0],max=data[0];
+        for(int i=0;i<sz;i++){
+            data[i]=Integer.parseInt(AudioFile.readLine());
+            mid += data[i];
+            }
+        int midd = (int)(mid/sz);
+        for(int i=0;i<sz;i++){         // Убрать постоянную составляющую
+            data[i] -= midd;
+        }
+        for(int i=0;i<sz;i++){
+            if (data[i]>max) max=data[i];
+            if (data[i]<min) min=data[i];
+            }
+        if (Math.abs(max)>Math.abs(min))
+            min = max;
+        min = Math.abs(min);
+        min = Short.MAX_VALUE*0.9f/min;
+        for(int i=0;i<sz;i++){
+            data[i] *= min;
+            }
+        }
     public boolean convertToWave(String PatnToFile,FFTCallBack back){
         fspec=null;
         try {
@@ -65,30 +94,7 @@ public class FFTAudioTextFile implements FFTFileSource{
                 }
         String in;
         try {
-            for(int i=0;i<10;i++)           // 10 первых строк пропустить
-                in = AudioFile.readLine();
-            int num_samples = Integer.parseInt(AudioFile.readLine());
-            short data[] = new short[num_samples];
-            float mid=0,min=data[0],max=data[0];
-            for(int i=0;i<num_samples;i++){
-                data[i]=(short)Integer.parseInt(AudioFile.readLine());
-                mid += data[i];
-                }
-            int midd = (int)(mid/num_samples);
-            for(int i=0;i<num_samples;i++){         // Убрать постоянную составляющую
-                data[i] -= midd;
-                }
-            for(int i=0;i<num_samples;i++){
-                if (data[i]>max) max=data[i];
-                if (data[i]<min) min=data[i];
-                }
-            if (Math.abs(max)>Math.abs(min))
-                min = max;
-            min = Math.abs(min);
-            min = Short.MAX_VALUE*0.9f/min;
-            for(int i=0;i<num_samples;i++){
-                data[i] *= min;
-                }
+            readData(AudioFile);
             int k = PatnToFile.lastIndexOf(".");
             String outname = PatnToFile.substring(0, k)+".wav";
             FileOutputStream wav_file = new FileOutputStream(outname);
@@ -96,6 +102,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             int num_channels;
             int bytes_per_sample;
             int byte_rate;
+            int num_samples = data.length;
             int i;  
             num_channels = 1;  
             bytes_per_sample = 2;
@@ -115,12 +122,13 @@ public class FFTAudioTextFile implements FFTFileSource{
             write_string("data", wav_file);
             write_little_endian(bytes_per_sample* num_samples*num_channels, 4, wav_file);
             for (i=0; i< num_samples; i++){
-                write_little_endian(data[i],bytes_per_sample, wav_file);
+                write_little_endian((short)data[i],bytes_per_sample, wav_file);
                 }   
             wav_file.flush();
             wav_file.close();
             back.onMessage("Записано "+num_samples+" сэмплов, "+ ((float)num_samples)/sample_rate+ " сек");
             fspec = PatnToFile;
+            close();
             return true;
             } catch(Exception ee){
                 back.onError(ee);
@@ -143,20 +151,7 @@ public class FFTAudioTextFile implements FFTFileSource{
             }
         String in;
         try {
-            do {
-                in = AudioFile.readLine();
-                }
-                while (in!=null && in.startsWith("//"));
-            if (in==null){
-                close();
-                return false;
-                }
-            sz = Integer.parseInt(AudioFile.readLine());
-            if (mode == OpenAndPlay){
-                data = new float[sz];
-                for(int i=0;i<sz;i++)
-                    data[i]=((float)Integer.parseInt(AudioFile.readLine()))/Short.MAX_VALUE;
-                }
+            readData(AudioFile);
             close();
             cnum=0;
             return true;
@@ -179,17 +174,20 @@ public class FFTAudioTextFile implements FFTFileSource{
 
     @Override
     public long getFrameLength() {
-        return sz*repeat;
+        return sz;
         }
     @Override
     public int read(float[] buf, int offset, int lnt) throws IOException {
         if (sz==0)
             return 0;
-        for(int i=offset; i<offset+lnt; i++){
-            buf[i] = data[cnum%sz];
+        int cnt=0;
+        for(int i=offset; i<offset+lnt && cnum<sz; i++){
+            buf[i] = data[cnum] /Short.MAX_VALUE;
+            //System.out.println("text "+i+" "+buf[i]);
             cnum++;
+            cnt++;
             }
-        return lnt;
+        return cnt;
         }
     @Override
     public void close() {
@@ -210,6 +208,6 @@ public class FFTAudioTextFile implements FFTFileSource{
 
     @Override
     public int getSampleRate() {
-        return 100;
+        return 44100;
         }
 }

@@ -1456,7 +1456,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                         panels[5] = new NeuronLayerWindow(5,FFTView.this,600,"Кохлеограмма",p_White);        
                         }
                     if (panels[6] == null && p_Cohleogram){
-                        panels[6] = new NeuronLayerWindow(6,FFTView.this,600,"Спектр*Кохлеограмма",p_White);        
+                        panels[6] = new NeuronLayerWindow(6,FFTView.this,600,"Спектр*Кохлеограмма",p_White);
                         }
                     if (panels[0]==null && p_ShowAmplSpector){
                         panels[0] = new FFTLayerWindow(3,FFTView.this,350,"Спектр (амплитуда)",p_White);

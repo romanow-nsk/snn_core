@@ -133,9 +133,10 @@ public class FFTAudioFile implements FFTFileSource{
         //player.addToPlay(bb);
         int l = lnt;
         for(int i=0; l--!=0; i++, offset++){
-            float vv = (float)(((0xFF & bb[2 * i + 1]) << 8) | (0xFF & bb[2 * i]));
+            short vv = (short) (((0x00FF & bb[2 * i + 1]) << 8) | (0x00FF & bb[2 * i]));
             buf[offset] = ((float) vv) /Short.MAX_VALUE;
-            }
+            //System.out.println("wave "+offset+" "+buf[offset]);
+        }
         return lnt;
         }
     @Override
