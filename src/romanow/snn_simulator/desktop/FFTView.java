@@ -74,6 +74,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private boolean p_FFTWindowReduce=false;// Сокращение размера окна по октавам
     //--------------------------------------------------------------------------
     private int nGTFStage=500;              // Усреднение кохлеограммы
+    private final int KF100 = FFT.sizeHZ/100;
     private OutputDataPlayer player = new OutputDataPlayer(10);
     volatile private LayerWindow panels[]={null,null,null,null,null,null,null,null,null};
     //0 - Окно спектра - амплитудное
@@ -1979,13 +1980,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         int count = nFirst < list.size() ? nFirst : list.size();
         Extreme extreme = list.get(0);
         double val0 = extreme.value;
-        toLog(String.format("Макс=%6.4f f=%d гц",extreme.value,(int)extreme.freq));
+        toLog(String.format("Макс=%6.4f f=%6.4f гц",extreme.value,extreme.freq/KF100));
         double sum=0;
         for(int i=1; i<count;i++){
             extreme = list.get(i);
             double proc = extreme.value*100/val0;
             sum+=proc;
-            toLog(String.format("Макс=%6.4f f=%d гц %d%% к первому",extreme.value,(int)extreme.freq,(int)proc));
+            toLog(String.format("Макс=%6.4f f=%6.4f гц %d%% к первому",extreme.value,extreme.freq/KF100,(int)proc));
             }
         toLog(String.format("Средний - %d%% к первому",(int)(sum/(count-1))));
     }//GEN-LAST:event_InputStatisticActionPerformed
