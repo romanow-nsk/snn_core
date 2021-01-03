@@ -47,7 +47,6 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     private String name="";
     private int count=0;
     private int size=0;
-    private boolean noPrevVal=true;
     private boolean noReset=true;
     private I_Layer src=null;
     private float prev[]=null;
@@ -61,15 +60,15 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     public void lasyReset(float data[]){
         if (!noReset)
             return;
+        count=0;
         noReset=false;
-        noPrevVal=true;
         prev = data;
         size = data.length;
         sumT=new SmoothArray(size);
         sum2T=new SmoothArray(size);
         sum2DiffF=new SmoothArray(size);
         sum2DiffT=new SmoothArray(size);
-            }
+        }
     public void smooth(int steps){
         sumT.smooth(steps);
         sum2T.smooth(steps);
@@ -230,7 +229,7 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
         double k=0;
         for(int i=0;i<nPoints;i++)
             k += -Math.log(sumT.data[i+1]/sumT.data[i]);
-        k /=10;
+        k /=nPoints;
         for(int i=0;i<sumT.data.length;i++)
             sumT.data[i]-=a0*Math.exp(-k*i);
         return k;

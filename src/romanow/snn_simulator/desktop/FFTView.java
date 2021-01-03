@@ -47,7 +47,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private int     p_BlockSize=16;         // Размер блока в 1024
     private int     p_SampleType=0;         // Тип источника
     private boolean p_Compress=true;
-    private int     p_CompressStage=15;
+    private int     p_CompressStage=26;
     private int     p_SubToneCount=4;
     private int     p_GPUmode=0;    
     private boolean p_LogFreq=true;         // Логарифм. шкала частот
@@ -1432,6 +1432,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     Runnable play = new Runnable(){
         public void run(){
             FFTAudioSource src = null;
+            inputStat.reset();
             src = sourceFactory.getSelected();
             if (src instanceof FFTFileSource){
                 FFTFileSource file  =  (FFTFileSource)src;
@@ -1661,6 +1662,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         kAmpl = (float)(Ampl.getValue()/500.);
         if (kAmpl>1)
             kAmpl = (float)(Math.exp(kAmpl)/Math.E);
+        toLog("KAmpl="+kAmpl);
         fft.setKAmpl(kAmpl);
     }//GEN-LAST:event_AmplStateChanged
 
