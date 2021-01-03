@@ -161,16 +161,29 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     public float getDiffT(){
         return getMid(getDiffsT());
         }
-    public ArrayList<Extreme> createExtrems(){
+    public ArrayList<Extreme> createExtrems(boolean byLevel){
         ArrayList<Extreme> out = new ArrayList<>();
         for(int i=1;i<size-1;i++)
-            if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1])
-                out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/size)));
-        out.sort(new Comparator<Extreme>() {
-            @Override
-            public int compare(Extreme o1, Extreme o2) {
-                if (o1.value==o2.value) return 0;
-                return o1.value > o2.value ? -1 : 1;
+            if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1]){
+                double d1 = sumT.data[i]-sumT.data[i-1];
+                double d2 = sumT.data[i]-sumT.data[i+1];
+                double diff = Math.sqrt(d1*d1+d2*d2);
+                out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/size),diff));
+                }
+        if (byLevel)
+            out.sort(new Comparator<Extreme>() {
+                @Override
+                public int compare(Extreme o1, Extreme o2) {
+                    if (o1.value==o2.value) return 0;
+                    return o1.value > o2.value ? -1 : 1;
+                    }
+                });
+        else
+            out.sort(new Comparator<Extreme>() {
+                @Override
+                public int compare(Extreme o1, Extreme o2) {
+                    if (o1.diff==o2.diff) return 0;
+                    return o1.diff > o2.diff ? -1 : 1;
                 }
             });
         return out;
@@ -210,7 +223,19 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     public String getFormatLabel() {
         GBL.notSupport(); //To change body of generated methods, choose Tools | Templates.
         return null;
-    }
+        }
+    //------------------- Коррекция экспоненты--------------------------
+    public double correctExp(int nPoints){
+        float a0=sumT.data[0];
+        double k=0;
+        for(int i=0;i<nPoints;i++)
+            k += -Math.log(sumT.data[i+1]/sumT.data[i]);
+        k /=10;
+        for(int i=0;i<sumT.data.length;i++)
+            sumT.data[i]-=a0*Math.exp(-k*i);
+        return k;
+        }
+    //-----------------------------------------------------------------
 
     
 }

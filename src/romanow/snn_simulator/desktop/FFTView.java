@@ -1314,6 +1314,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                                     cohle = fft.getGTSpectrum();
                                     multiple = fft.getMultipleSpectrum(p_MultipleSK);
                                     }
+                                //--------------------------------------------------------------------------
                                 switch(ModelSourceType.getSelectedIndex()){
                                     case 0:
                                         inputStat.addStatistic(fft.isLogFreqMode() ? spectrum : lineSpectrum);
@@ -1973,13 +1974,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 });
     }//GEN-LAST:event_PlayMPXActionPerformed
 
-    private void InputStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputStatisticActionPerformed
-        showStatistic(inputStat);
-        ArrayList<Extreme> list = inputStat.createExtrems();
+    private void showExtrems(boolean mode){
+        ArrayList<Extreme> list = inputStat.createExtrems(mode);
         int nFirst = Integer.parseInt(FirstN.getText());
         int count = nFirst < list.size() ? nFirst : list.size();
         Extreme extreme = list.get(0);
         double val0 = extreme.value;
+        toLog(mode ? "\nПо амплитуде" : "\nПо спаду");
         toLog(String.format("Макс=%6.4f f=%6.4f гц",extreme.value,extreme.freq/KF100));
         double sum=0;
         for(int i=1; i<count;i++){
@@ -1989,6 +1990,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             toLog(String.format("Макс=%6.4f f=%6.4f гц %d%% к первому",extreme.value,extreme.freq/KF100,(int)proc));
             }
         toLog(String.format("Средний - %d%% к первому",(int)(sum/(count-1))));
+        }
+
+    private void InputStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputStatisticActionPerformed
+        toLog("Коррекция exp k="+inputStat.correctExp(10));
+        showStatistic(inputStat);
+        showExtrems(true);
+        showExtrems(false);
     }//GEN-LAST:event_InputStatisticActionPerformed
 
 
