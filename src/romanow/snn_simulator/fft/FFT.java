@@ -555,8 +555,8 @@ public class FFT implements FFTBinStream{
         return  filterBank.getGammatone(wave, pars.procOver(), note, env);
         }
 
-    private double F_SCALE = 1.0;         // 3.0
     public float []getMultipleSpectrum(boolean multiple){
+        double F_SCALE = pars.F_SCALE();
         float out[] = pars.logFreqMode() ? logSpectrum.getOriginal() : spectrum.getOriginal();
         float vv[] = GTSpectrum.getOriginal();
         for(int i=0;i<out.length;i++){

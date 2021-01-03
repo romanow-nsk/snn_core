@@ -51,6 +51,10 @@ public class FFTParams implements FFTBinStream{
                 "\nПроцент перекрытия="+procOver+"\nОктавный режим="+logFreqMode+"\nЧастот в полутоне="+subToneCount+
                 "\nНаличие кохлеограммы="+p_Cohleogram;
         }
+
+    public double F_SCALE() {
+        return F_SCALE;
+        }
     public FFTParams(){}
     @Override
     public void load(DataInputStream in, int formatVersion) throws IOException {
