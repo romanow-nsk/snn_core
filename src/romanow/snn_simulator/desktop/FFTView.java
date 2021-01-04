@@ -189,6 +189,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         NoFirst.setText(""+noFirstPoints);
         NoLast.setText(""+noLastPoints);
         KMultiple.setText(String.format("%2.1f",kMultiple));
+
         } catch(Throwable ee){
             toLog(ee);
             }
@@ -1997,6 +1998,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             return;
             }
         FFTAudioTextFile xx = (FFTAudioTextFile)src;
+        xx.setnPoints(20);
         xx.convertToWave(p_lastFileDir+p_lastFileName, back);
     }//GEN-LAST:event_TextToWaveConvertActionPerformed
 

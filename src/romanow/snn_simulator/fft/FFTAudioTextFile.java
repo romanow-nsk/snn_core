@@ -23,6 +23,10 @@ public class FFTAudioTextFile implements FFTFileSource{
     private int sz=0;
     private float data[]=null;
     private int cnum;
+    private int nPoints=0;             // Количество точек для удаления тренда
+
+    public void setnPoints(int nPoints) {
+        this.nPoints = nPoints; }
     @Override
     public void enableToPlay(boolean play) {
         }
@@ -95,6 +99,7 @@ public class FFTAudioTextFile implements FFTFileSource{
         String in;
         try {
             readData(AudioFile);
+            removeTrend(nPoints);
             int k = PatnToFile.lastIndexOf(".");
             String outname = PatnToFile.substring(0, k)+".wav";
             FileOutputStream wav_file = new FileOutputStream(outname);
@@ -209,5 +214,25 @@ public class FFTAudioTextFile implements FFTFileSource{
     @Override
     public int getSampleRate() {
         return 44100;
+        }
+    public void removeTrend(int nPoints){
+        if (nPoints==0)
+            return;
+        float middles[] = new float[data.length];
+        for(int i=0;i<data.length;i++){
+            middles[i]=0;
+            for(int j=i-nPoints;j<=i+nPoints;j++){
+                if (j<0)
+                    middles[i]+=data[0];
+                else
+                    if(j>=data.length)
+                        middles[i]+=data[data.length-1];
+                    else
+                        middles[i]+=data[j];
+                }
+            middles[i]/=2*nPoints+1;
+            }
+        for(int ii=0;ii<data.length;ii++)
+            data[ii]-=middles[ii];
         }
 }

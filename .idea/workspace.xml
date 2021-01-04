@@ -8,10 +8,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LineGraphicFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/LineGraphicFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +230,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609782048904</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Половина диапазона - спектр">
+      <created>1609786015149</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1609786015149</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -244,13 +250,14 @@
     <MESSAGE value="Косяк с wave" />
     <MESSAGE value="Коррекция экспоненты" />
     <MESSAGE value="Ограничения" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ограничения" />
+    <MESSAGE value="Половина диапазона - спектр" />
+    <option name="LAST_COMMIT_MESSAGE" value="Половина диапазона - спектр" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1609699273408">
+    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1609786731520">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1609699273408" />
+    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1609786731520" />
     <state x="530" y="224" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1601827951414">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -259,54 +266,54 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="601" y="325" width="397" height="225" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1600.870@0.0.1600.870" timestamp="1605678593597" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1609782043428">
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1609786011103">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1609782043428" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1609786011103" />
     <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1605675168961">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="506" y="179" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1605675168960" />
-    <state width="1556" height="156" key="GridCell.Tab.0.bottom" timestamp="1609785516299">
+    <state width="1556" height="156" key="GridCell.Tab.0.bottom" timestamp="1609787420604">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.bottom/0.0.1600.870@0.0.1600.870" timestamp="1609785516299" />
-    <state width="1556" height="156" key="GridCell.Tab.0.center" timestamp="1609785516299">
+    <state width="1556" height="156" key="GridCell.Tab.0.bottom/0.0.1600.870@0.0.1600.870" timestamp="1609787420604" />
+    <state width="1556" height="156" key="GridCell.Tab.0.center" timestamp="1609787420604">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.center/0.0.1600.870@0.0.1600.870" timestamp="1609785516299" />
-    <state width="1556" height="156" key="GridCell.Tab.0.left" timestamp="1609785516299">
+    <state width="1556" height="156" key="GridCell.Tab.0.center/0.0.1600.870@0.0.1600.870" timestamp="1609787420604" />
+    <state width="1556" height="156" key="GridCell.Tab.0.left" timestamp="1609787420604">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.left/0.0.1600.870@0.0.1600.870" timestamp="1609785516299" />
-    <state width="1556" height="156" key="GridCell.Tab.0.right" timestamp="1609785516299">
+    <state width="1556" height="156" key="GridCell.Tab.0.left/0.0.1600.870@0.0.1600.870" timestamp="1609787420604" />
+    <state width="1556" height="156" key="GridCell.Tab.0.right" timestamp="1609787420604">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.right/0.0.1600.870@0.0.1600.870" timestamp="1609785516299" />
-    <state width="1556" height="243" key="GridCell.Tab.1.bottom" timestamp="1609781661938">
+    <state width="1556" height="156" key="GridCell.Tab.0.right/0.0.1600.870@0.0.1600.870" timestamp="1609787420604" />
+    <state width="1556" height="243" key="GridCell.Tab.1.bottom" timestamp="1609787109385">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.bottom/0.0.1600.870@0.0.1600.870" timestamp="1609781661938" />
-    <state width="1556" height="243" key="GridCell.Tab.1.center" timestamp="1609781661938">
+    <state width="1556" height="243" key="GridCell.Tab.1.bottom/0.0.1600.870@0.0.1600.870" timestamp="1609787109385" />
+    <state width="1556" height="243" key="GridCell.Tab.1.center" timestamp="1609787109385">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.center/0.0.1600.870@0.0.1600.870" timestamp="1609781661938" />
-    <state width="1556" height="243" key="GridCell.Tab.1.left" timestamp="1609781661938">
+    <state width="1556" height="243" key="GridCell.Tab.1.center/0.0.1600.870@0.0.1600.870" timestamp="1609787109385" />
+    <state width="1556" height="243" key="GridCell.Tab.1.left" timestamp="1609787109385">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.left/0.0.1600.870@0.0.1600.870" timestamp="1609781661938" />
-    <state width="1556" height="243" key="GridCell.Tab.1.right" timestamp="1609781661938">
+    <state width="1556" height="243" key="GridCell.Tab.1.left/0.0.1600.870@0.0.1600.870" timestamp="1609787109385" />
+    <state width="1556" height="243" key="GridCell.Tab.1.right" timestamp="1609787109385">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1609781661938" />
+    <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1609787109385" />
     <state x="280" y="12" key="SettingsEditor" timestamp="1609741700948">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="280" y="12" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1609741700948" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1609782051580">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1609786016704">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1609782051580" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1609786016704" />
     <state x="641" y="171" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1605675088722">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -336,7 +343,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java</url>
-          <line>97</line>
+          <line>102</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -348,6 +355,16 @@
           <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java</url>
           <line>640</line>
           <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java</url>
+          <line>2000</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java</url>
+          <line>234</line>
+          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

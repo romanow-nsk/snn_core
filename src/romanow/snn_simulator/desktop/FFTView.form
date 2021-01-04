@@ -2,6 +2,21 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Component class="javax.swing.JComboBox" name="FilterMode">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="&#x412;&#x44b;&#x445;.&#x441;&#x43b;&#x43e;&#x439;"/>
+            <StringItem index="1" value="&#x41f;&#x443;&#x441;&#x442;&#x43e;&#x439;"/>
+            <StringItem index="2" value="&#x41b;&#x438;&#x43d;&#x435;&#x439;&#x43d;&#x44b;&#x439;"/>
+            <StringItem index="3" value="&#x416;&#x435;&#x441;&#x442;&#x43a;&#x438;&#x439;"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="FilterModeItemStateChanged"/>
+      </Events>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu2">
@@ -660,26 +675,6 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JComboBox" name="FilterMode">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="&#x412;&#x44b;&#x445;.&#x441;&#x43b;&#x43e;&#x439;"/>
-            <StringItem index="1" value="&#x41f;&#x443;&#x441;&#x442;&#x43e;&#x439;"/>
-            <StringItem index="2" value="&#x41b;&#x438;&#x43d;&#x435;&#x439;&#x43d;&#x44b;&#x439;"/>
-            <StringItem index="3" value="&#x416;&#x435;&#x441;&#x442;&#x43a;&#x438;&#x439;"/>
-          </StringArray>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="FilterModeItemStateChanged"/>
-      </Events>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="110" y="560" width="170" height="25"/>
-        </Constraint>
-      </Constraints>
-    </Component>
     <Component class="javax.swing.JSlider" name="Gammatone">
       <Properties>
         <Property name="maximum" type="int" value="119"/>
@@ -1157,6 +1152,26 @@
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="310" y="260" width="150" height="-1"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel23">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x423;&#x434;&#x430;&#x43b;&#x435;&#x43d;&#x438;&#x435; &#x442;&#x440;&#x435;&#x43d;&#x434;&#x430;"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="310" y="320" width="100" height="-1"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="javax.swing.JTextField" name="NTrendPoints">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="410" y="320" width="40" height="25"/>
         </Constraint>
       </Constraints>
     </Component>
