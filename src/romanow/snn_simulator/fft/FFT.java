@@ -335,7 +335,7 @@ public class FFT implements FFTBinStream{
         TimeCounter tc = new TimeCounter("Конвертация спектра");
         int dd = sz/20;
         for(int i=0, base=0; i<logSpectrumList.length; i++, base+=nQuant){
-            spectrum = new FFTArray(wave.length);
+            spectrum = new FFTArray(wave.length/2);
             logSpectrum=new FFTArray(toneIndexes.length);
             for(int j=0;j<pars.W();j++){
                 wave[j] = base+j<fullWave.length ? fullWave[base+j] : 0;
@@ -367,7 +367,7 @@ public class FFT implements FFTBinStream{
         tc.clear();
         back.onStart(stepMS);
         wave = new float[pars.W()];
-        spectrum = new FFTArray(wave.length);
+        spectrum = new FFTArray(wave.length/2);
         logSpectrum=new FFTArray(toneIndexes.length);
         nblock=0;
         int size = fullWave.length;

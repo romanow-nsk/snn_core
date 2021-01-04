@@ -170,7 +170,7 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
                 double d1 = sumT.data[i]-sumT.data[k1];
                 double d2 = sumT.data[i]-sumT.data[k2];
                 double diff = Math.sqrt(d1*d1+d2*d2);
-                out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/size),diff));
+                out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/2/size),diff));
                 }
         if (byLevel)
             out.sort(new Comparator<Extreme>() {

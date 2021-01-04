@@ -167,8 +167,8 @@ public class LineGraphicFrame extends LayerWindow{
         float data[] = stat.vals;
         series.setName(stat.title);
         ObservableList dd = series.getData();
-        for (int j = noFirst; j < data.length/2-noLast; j++) {               // Первое тупо отсечь !!!!!!!!!!!!!!!!!!!!!
-            double ff = ((j+1.0)*freq)/data.length;
+        for (int j = noFirst; j < data.length-noLast; j++) {               // Первое тупо отсечь !!!!!!!!!!!!!!!!!!!!!
+            double ff = ((j+1.0)*freq/2)/data.length;
             XYChart.Data<Double, Double> item = new XYChart.Data<Double, Double>(ff, (double)data[j]);
             dd.add(item);
             }

@@ -2069,7 +2069,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
     private void showExtrems(boolean mode){
         int sz = inputStat.getMids().length;
-        toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",100./sz*noFirstPoints,100./sz*(sz-noLastPoints)));
+        toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",100./sz*noFirstPoints,50./sz*(sz-noLastPoints)));
         ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirstPoints,noLastPoints);
         if (list.size()==0){
             toLog("Экстремумов не найдено");
@@ -2079,7 +2079,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         int count = nFirst < list.size() ? nFirst : list.size();
         Extreme extreme = list.get(0);
         double val0 = extreme.value;
-        toLog(mode ? "\nПо амплитуде" : "\nПо спаду");
+        toLog(mode ? "По амплитуде" : "По спаду");
         toLog(String.format("Макс=%6.4f f=%6.4f гц",extreme.value,extreme.freq/KF100));
         double sum=0;
         for(int i=1; i<count;i++){
