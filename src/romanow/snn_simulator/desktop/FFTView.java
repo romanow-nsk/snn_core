@@ -72,6 +72,18 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private int p_LogLevel=0;               // Уровень лога...
     private int p_StatId=0;                 // Номер статистики
     private boolean p_FFTWindowReduce=false;// Сокращение размера окна по октавам
+    private int     kSmooth=50;             // Циклов сглаживания
+    private boolean statSmooth=true;        // Режим сглаживания
+    private boolean statMiddle=true;        // Вывод статистики среднего
+    private boolean statDisp=false;         // Вывод статистики дисперсии
+    private boolean statDiffT=false;
+    private boolean statDiffF=false;
+    private int nFirstMax=10;               // Количество максимумов в статистике (вывод)
+    private boolean removeExp=false;        // Фильтр ВЧ (удаление тренда)
+    private int nFirstExpPoints=10;         // Количестов точек, используемых в удалении
+    private int noFirstPoints=10;           // Отрезать точек справа и слева
+    private int noLastPoints=10;
+    private double kMultiple=3.0;
     //--------------------------------------------------------------------------
     private int nGTFStage=500;              // Усреднение кохлеограммы
     private final int KF100 = FFT.sizeHZ/100;
@@ -165,11 +177,24 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         Gammatone.setValue(p_GTFNote);
         NGammatone.setText(fft.getNoteNameByIndex(p_GTFNote));
         ModelSourceType.setSelectedIndex(p_ModelSourceType);
+        KSmooth.setText(""+kSmooth);
+        StatSmooth.setSelected(statSmooth);
+        StatMiddle1.setSelected(statMiddle);
+        StatDiff.setSelected(statDisp);
+        StatDiffT.setSelected(statDiffT);
+        StatDiffF.setSelected(statDiffF);
+        FirstN.setText(""+nFirstMax);
+        RemoveExp.setSelected(removeExp);
+        NPointsExp.setText(""+nFirstExpPoints);
+        NoFirst.setText(""+noFirstPoints);
+        NoLast.setText(""+noLastPoints);
+        KMultiple.setText(String.format("%2.1f",kMultiple));
         } catch(Throwable ee){
             toLog(ee);
             }
         }
-    private void getViewState(){
+    private boolean getViewState(){
+        try {
         p_OverProc = Integer.parseInt(M4.getText());
         p_BlockSize = Integer.parseInt(M5.getText());
         p_CompressStage = Integer.parseInt(KCompress.getText());
@@ -184,7 +209,23 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         p_GTFNote = Gammatone.getValue();
         p_ModelSourceType=ModelSourceType.getSelectedIndex();
         p_LogLevel = LogLevel.getSelectedIndex();
-        }
+        kSmooth = Integer.parseInt(KSmooth.getText());
+        statSmooth = StatSmooth.isSelected();
+        statMiddle = StatMiddle1.isSelected();
+        statDisp = StatDiff.isSelected();
+        statDiffT =StatDiffT.isSelected();
+        statDiffF = StatDiffF.isSelected();
+        nFirstMax = Integer.parseInt(FirstN.getText());
+        removeExp = RemoveExp.isSelected();
+        nFirstExpPoints = Integer.parseInt(FirstN.getText());
+        noFirstPoints = Integer.parseInt(NoFirst.getText());
+        noLastPoints = Integer.parseInt(NoLast.getText());
+        String ss = KMultiple.getText();
+        kMultiple = Double.parseDouble(ss.replace(",","."));
+        return true;
+            } catch (Exception ee){ toLog("Ошибка формата целого/вещественного");
+                return false; }
+    }
 
     private boolean getItem(int menu, int idx){
         JMenu settings = this.getJMenuBar().getMenu(menu);
@@ -358,7 +399,18 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             p_OutAmpl = out.readBoolean();
             p_FFTWindowReduce = out.readBoolean();
             p_GPUmode = out.readInt();
-            KMultiple.setText(""+out.readDouble());
+            kSmooth = out.readInt();
+            statSmooth = out.readBoolean();
+            statMiddle = out.readBoolean();
+            statDisp = out.readBoolean();
+            statDiffT = out.readBoolean();
+            statDiffF = out.readBoolean();
+            nFirstMax = out.readInt();
+            removeExp = out.readBoolean();
+            nFirstExpPoints = out.readInt();
+            noFirstPoints = out.readInt();
+            noLastPoints = out.readInt();
+            kMultiple = out.readDouble();
             setViewState();
             setMenuState();
             } catch (Exception ee){
@@ -405,7 +457,18 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             out.writeBoolean(p_OutAmpl);
             out.writeBoolean(p_FFTWindowReduce);
             out.writeInt(p_GPUmode);
-            out.writeDouble(F_SCALA());
+            out.writeInt(kSmooth);
+            out.writeBoolean(statSmooth);
+            out.writeBoolean(statMiddle);
+            out.writeBoolean(statDisp);
+            out.writeBoolean(statDiffT);
+            out.writeBoolean(statDiffF);
+            out.writeInt(nFirstMax);
+            out.writeBoolean(removeExp);
+            out.writeInt(nFirstExpPoints);
+            out.writeInt(noFirstPoints);
+            out.writeInt(noLastPoints);
+            out.writeDouble(kMultiple);
             } catch (Exception ee){
                 toLog(true,"Настройки не сохранены");
                 try { if (out!=null) out.close(); } catch (Exception e2){}
@@ -526,7 +589,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         Info = new javax.swing.JMenu();
         InfoGPU = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -1247,10 +1310,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         hardFilter
         };    
 
-    public void saveCurrentViewState(){
-        getViewState();                       // Получить данные от View
+    public boolean saveCurrentViewState(){
+        boolean bb=getViewState();                       // Получить данные от View
         getMenuState();
         saveSettings();
+        return bb;
         }
 
     private void runToPlay(Runnable code){
@@ -1294,9 +1358,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private boolean needCohle(){
         return p_Cohleogram || (modelFactory.getSelected()!=null  && p_ModelSourceType!=0);
         }
-    private double F_SCALA(){
-        return Double.parseDouble(KMultiple.getText());
-    }
     //--------------------------------------------------------------------------
     private FFTCallBack back = new FFTCallBack(){
                 @Override
@@ -1476,7 +1537,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                     fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc,
                         p_LogFreq,p_SubToneCount,
                         needCohle(),
-                        p_GPU,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
+                        p_GPU,p_FFTWindowReduce,p_GPUmode,kMultiple));
                     if (panels[1] == null && p_SrcSpectrum){
                         panels[1] = new NeuronLayerWindow(0,FFTView.this,600,"Исходный спектр",p_White);        
                         }
@@ -1609,8 +1670,10 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     }//GEN-LAST:event_NNeightborsActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        getViewState();
+        if (!getViewState())
+            return;
         saveSettings();
+        dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void FileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileNameActionPerformed
@@ -1887,7 +1950,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                 fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc,
                     p_LogFreq,p_SubToneCount,
                     needCohle(),
-                    p_GPU,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
+                    p_GPU,p_FFTWindowReduce,p_GPUmode,kMultiple));
                 if (convertMode)
                     fft.preloadFullCohleogramm(src, back);
                 else
@@ -1969,7 +2032,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fname,44100, emptyCallBack))
             return;
         fft.setFFTParams(new FFTParams(p_BlockSize*FFT.Size0,p_OverProc, true,p_SubToneCount,
-                true, false,p_FFTWindowReduce,p_GPUmode,F_SCALA()));
+                true, false,p_FFTWindowReduce,p_GPUmode,kMultiple));
         if (!fft.preloadWave(audioFile,emptyCallBack))
             return;
         fft.preloadFullSpectrum(false,audioFile,emptyCallBack);
@@ -2005,9 +2068,9 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     }//GEN-LAST:event_PlayMPXActionPerformed
 
     private void showExtrems(boolean mode){
-        int noFirst = Integer.parseInt(NoFirst.getText());
-        int noLast = Integer.parseInt(NoLast.getText());
-        ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirst,noLast);
+        int sz = inputStat.getMids().length;
+        toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",100./sz*noFirstPoints,100./sz*(sz-noLastPoints)));
+        ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirstPoints,noLastPoints);
         if (list.size()==0){
             toLog("Экстремумов не найдено");
             return;
