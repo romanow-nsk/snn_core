@@ -53,6 +53,9 @@ public class LineGraphicFrame extends LayerWindow{
             }
         data.add(gg);
         }
+    private int noFirst=0;
+    private int noLast=0;
+    private double freq = FFT.sizeHZ;
     private Vector<Graphic> data = new Vector();
     private FFTParams params;
     private LayerWindowCallBack back=null;
@@ -60,6 +63,11 @@ public class LineGraphicFrame extends LayerWindow{
     private Color foreColor = Color.BLACK;
     LineChart<?, Number> lineChart;
     private int subToneCount=1;
+    public void setNoFirstLast(int ff, int ll){
+        noFirst=ff;
+        noLast=ll;
+        }
+    public void setFreq(int vv){ freq=vv; }
     public LineGraphicFrame(){
         super("Статистика");
         }
@@ -159,18 +167,18 @@ public class LineGraphicFrame extends LayerWindow{
         float data[] = stat.vals;
         series.setName(stat.title);
         ObservableList dd = series.getData();
-        for (int j = 2; j < data.length/2; j++) {               // Первое тупо отсечь !!!!!!!!!!!!!!!!!!!!!
-            int ff = (int)((j+1.0)*FFT.sizeHZ)/data.length;
-            XYChart.Data<Integer, Double> item = new XYChart.Data<Integer, Double>(ff, (double)data[j]);
+        for (int j = noFirst; j < data.length/2-noLast; j++) {               // Первое тупо отсечь !!!!!!!!!!!!!!!!!!!!!
+            double ff = ((j+1.0)*freq)/data.length;
+            XYChart.Data<Double, Double> item = new XYChart.Data<Double, Double>(ff, (double)data[j]);
             dd.add(item);
             }
         lineChart.getData().add(series);
         //----------- Node появляются только после добавления серии !!!!!!!!!!!!
         for (int ii = 0; ii < dd.size(); ii++) {
-            XYChart.Data<Integer, Double> item = (XYChart.Data<Integer, Double>) dd.get(ii);
+            XYChart.Data<Double, Double> item = (XYChart.Data<Double, Double>) dd.get(ii);
             final Node node = item.getNode();
             final float vv = data[ii];
-            final String x0 = ""+(int)((ii+1.0)*FFT.sizeHZ/data.length);
+            final String x0 = String.format("%6.2f",(ii+1.0+noFirst)*freq/data.length);
             //------------------ Наведение мыши ----------------------------
             Tooltip.install(node, new Tooltip(x0 +"=>"+ String.format("%6.4f",vv)));
             node.setOnMouseEntered(new EventHandler<Event>() {

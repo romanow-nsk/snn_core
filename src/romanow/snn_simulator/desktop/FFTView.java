@@ -485,6 +485,11 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         StatDiffF = new javax.swing.JCheckBox();
         jLabel22 = new javax.swing.JLabel();
         FirstN = new javax.swing.JTextField();
+        RemoveExp = new javax.swing.JCheckBox();
+        NPointsExp = new javax.swing.JTextField();
+        NoFirst = new javax.swing.JTextField();
+        NoLast = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         LoadModel = new javax.swing.JMenuItem();
@@ -885,7 +890,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
         jLabel21.setText("Первые N макс.");
         getContentPane().add(jLabel21);
-        jLabel21.setBounds(300, 200, 100, 20);
+        jLabel21.setBounds(310, 200, 100, 20);
 
         StatSmooth.setSelected(true);
         StatSmooth.setText("Сглаживание");
@@ -913,9 +918,29 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         getContentPane().add(jLabel22);
         jLabel22.setBounds(300, 10, 110, 20);
 
-        FirstN.setText("5");
+        FirstN.setText("10");
         getContentPane().add(FirstN);
-        FirstN.setBounds(420, 200, 30, 25);
+        FirstN.setBounds(410, 200, 40, 25);
+
+        RemoveExp.setText("Фильтр exp");
+        getContentPane().add(RemoveExp);
+        RemoveExp.setBounds(300, 230, 100, 23);
+
+        NPointsExp.setText("10");
+        getContentPane().add(NPointsExp);
+        NPointsExp.setBounds(410, 230, 40, 25);
+
+        NoFirst.setText("0");
+        getContentPane().add(NoFirst);
+        NoFirst.setBounds(360, 280, 40, 25);
+
+        NoLast.setText("0");
+        getContentPane().add(NoLast);
+        NoLast.setBounds(410, 280, 40, 25);
+
+        jLabel1.setText("Отсечка слева/справа");
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(310, 260, 150, 14);
 
         jMenu2.setText("Модель");
 
@@ -1792,7 +1817,10 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             }
         else{
             if (panels[7]==null){
-                panels[7] = new LineGraphicFrame(this,fft.getParams());
+                LineGraphicFrame gg = new LineGraphicFrame(this,fft.getParams());
+                gg.setNoFirstLast(Integer.parseInt(NoFirst.getText()),Integer.parseInt(NoLast.getText()));
+                gg.setFreq(100);
+                panels[7] = gg;
                 }
             if (StatMiddle1.isSelected())
                 panels[7].paint(stat.getMids(), sName+" Среднее");
@@ -1977,7 +2005,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     }//GEN-LAST:event_PlayMPXActionPerformed
 
     private void showExtrems(boolean mode){
-        ArrayList<Extreme> list = inputStat.createExtrems(mode);
+        int noFirst = Integer.parseInt(NoFirst.getText());
+        int noLast = Integer.parseInt(NoLast.getText());
+        ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirst,noLast);
+        if (list.size()==0){
+            toLog("Экстремумов не найдено");
+            return;
+            }
         int nFirst = Integer.parseInt(FirstN.getText());
         int count = nFirst < list.size() ? nFirst : list.size();
         Extreme extreme = list.get(0);
@@ -1995,7 +2029,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         }
 
     private void InputStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputStatisticActionPerformed
-        toLog("Коррекция exp k="+inputStat.correctExp(10));
+        if (RemoveExp.isSelected())
+            toLog("Коррекция exp k="+inputStat.correctExp(Integer.parseInt(NPointsExp.getText())));
         showStatistic(inputStat);
         showExtrems(true);
         showExtrems(false);
@@ -2120,13 +2155,17 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JComboBox ModelSourceType;
     private javax.swing.JTextField NGammatone;
     private javax.swing.JTextField NNeightbors;
+    private javax.swing.JTextField NPointsExp;
     private javax.swing.JTextField NSynapses;
     private javax.swing.JComboBox NeuronId;
+    private javax.swing.JTextField NoFirst;
+    private javax.swing.JTextField NoLast;
     private javax.swing.JButton Pause;
     private javax.swing.JButton PlayMPX;
     private javax.swing.JMenuItem PreloadClear;
     private javax.swing.JMenuItem PreloadCohleogram;
     private javax.swing.JMenuItem PreloadSpector;
+    private javax.swing.JCheckBox RemoveExp;
     private javax.swing.JButton Run;
     private javax.swing.JSlider SCompress;
     private javax.swing.JComboBox Samples;
@@ -2162,6 +2201,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JCheckBoxMenuItem ViewSoucrceSpector;
     private javax.swing.JCheckBoxMenuItem WhiteBack;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

@@ -160,9 +160,9 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     public float getDiffT(){
         return getMid(getDiffsT());
         }
-    public ArrayList<Extreme> createExtrems(boolean byLevel){
+    public ArrayList<Extreme> createExtrems(boolean byLevel, int nFirst, int nLast){
         ArrayList<Extreme> out = new ArrayList<>();
-        for(int i=1;i<size-1;i++)
+        for(int i=nFirst+1;i<size-1-nLast;i++)
             if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1]){
                 double d1 = sumT.data[i]-sumT.data[i-1];
                 double d2 = sumT.data[i]-sumT.data[i+1];
