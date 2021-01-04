@@ -5,6 +5,7 @@
  */
 package romanow.snn_simulator.desktop;
 
+import com.sun.scenario.Settings;
 import romanow.snn_simulator.I_NeuronStep;
 import romanow.snn_simulator.I_NetParams;
 import romanow.snn_simulator.layer.*;
@@ -12,6 +13,7 @@ import romanow.snn_simulator.neuron.N_BaseNeuron;
 import romanow.snn_simulator.GBL;
 import java.awt.FileDialog;
 import java.io.*;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JCheckBoxMenuItem;
@@ -84,6 +86,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private int noFirstPoints=10;           // Отрезать точек справа и слева
     private int noLastPoints=10;
     private double kMultiple=3.0;
+    private int nTrendPoints=0;             // Точек при сглаживании тренда
     //--------------------------------------------------------------------------
     private int nGTFStage=500;              // Усреднение кохлеограммы
     private final int KF100 = FFT.sizeHZ/100;
@@ -189,7 +192,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         NoFirst.setText(""+noFirstPoints);
         NoLast.setText(""+noLastPoints);
         KMultiple.setText(String.format("%2.1f",kMultiple));
-
+        NTrendPoints.setText(""+nTrendPoints);
         } catch(Throwable ee){
             toLog(ee);
             }
@@ -223,6 +226,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         noLastPoints = Integer.parseInt(NoLast.getText());
         String ss = KMultiple.getText();
         kMultiple = Double.parseDouble(ss.replace(",","."));
+        nTrendPoints = Integer.parseInt(NTrendPoints.getText());
         return true;
             } catch (Exception ee){ toLog("Ошибка формата целого/вещественного");
                 return false; }
@@ -412,6 +416,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             noFirstPoints = out.readInt();
             noLastPoints = out.readInt();
             kMultiple = out.readDouble();
+            nTrendPoints = out.readInt();
             setViewState();
             setMenuState();
             } catch (Exception ee){
@@ -470,6 +475,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             out.writeInt(noFirstPoints);
             out.writeInt(noLastPoints);
             out.writeDouble(kMultiple);
+            out.writeInt(nTrendPoints);
             } catch (Exception ee){
                 toLog(true,"Настройки не сохранены");
                 try { if (out!=null) out.close(); } catch (Exception e2){}
@@ -479,6 +485,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        FilterMode = new javax.swing.JComboBox();
         Run = new javax.swing.JButton();
         M2 = new javax.swing.JTextField();
         M3 = new javax.swing.JTextField();
@@ -510,7 +517,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         KAmpl = new javax.swing.JSlider();
         jLabel11 = new javax.swing.JLabel();
         ToneCount = new javax.swing.JTextField();
-        FilterMode = new javax.swing.JComboBox();
         Gammatone = new javax.swing.JSlider();
         jLabel12 = new javax.swing.JLabel();
         NGammatone = new javax.swing.JTextField();
@@ -554,6 +560,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         NoFirst = new javax.swing.JTextField();
         NoLast = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        NTrendPoints = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         LoadModel = new javax.swing.JMenuItem();
@@ -589,6 +597,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         ExportJSON = new javax.swing.JMenuItem();
         Info = new javax.swing.JMenu();
         InfoGPU = new javax.swing.JMenuItem();
+
+        FilterMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Вых.слой", "Пустой", "Линейный", "Жесткий" }));
+        FilterMode.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                FilterModeItemStateChanged(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -779,15 +794,6 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         ToneCount.setText("4");
         getContentPane().add(ToneCount);
         ToneCount.setBounds(250, 160, 30, 25);
-
-        FilterMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Вых.слой", "Пустой", "Линейный", "Жесткий" }));
-        FilterMode.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                FilterModeItemStateChanged(evt);
-            }
-        });
-        getContentPane().add(FilterMode);
-        FilterMode.setBounds(110, 560, 170, 25);
 
         Gammatone.setMaximum(119);
         Gammatone.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1005,6 +1011,14 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         jLabel1.setText("Отсечка слева/справа");
         getContentPane().add(jLabel1);
         jLabel1.setBounds(310, 260, 150, 14);
+
+        jLabel23.setText("Удаление тренда");
+        getContentPane().add(jLabel23);
+        jLabel23.setBounds(310, 325, 100, 14);
+
+        NTrendPoints.setText("0");
+        getContentPane().add(NTrendPoints);
+        NTrendPoints.setBounds(410, 320, 40, 25);
 
         jMenu2.setText("Модель");
 
@@ -1521,6 +1535,9 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             FFTAudioSource src = null;
             inputStat.reset();
             src = sourceFactory.getSelected();
+            if (src instanceof FFTAudioTextFile) {
+                ((FFTAudioTextFile)src).setnPoints(nTrendPoints);
+                }
             if (src instanceof FFTFileSource){
                 FFTFileSource file  =  (FFTFileSource)src;
                 boolean ff = file.testAndOpenFile(FFTAudioFile.OpenAndPlay, p_lastFileDir+p_lastFileName,FFT.sizeHZ, back);
@@ -1998,7 +2015,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
             return;
             }
         FFTAudioTextFile xx = (FFTAudioTextFile)src;
-        xx.setnPoints(20);
+        xx.setnPoints(nTrendPoints);
         xx.convertToWave(p_lastFileDir+p_lastFileName, back);
     }//GEN-LAST:event_TextToWaveConvertActionPerformed
 
@@ -2222,6 +2239,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JTextField NNeightbors;
     private javax.swing.JTextField NPointsExp;
     private javax.swing.JTextField NSynapses;
+    private javax.swing.JTextField NTrendPoints;
     private javax.swing.JComboBox NeuronId;
     private javax.swing.JTextField NoFirst;
     private javax.swing.JTextField NoLast;
@@ -2281,6 +2299,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

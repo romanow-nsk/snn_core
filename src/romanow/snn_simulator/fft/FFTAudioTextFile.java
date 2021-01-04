@@ -157,6 +157,7 @@ public class FFTAudioTextFile implements FFTFileSource{
         String in;
         try {
             readData(AudioFile);
+            removeTrend(nPoints);
             close();
             cnum=0;
             return true;
