@@ -2097,13 +2097,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         int nFirst = Integer.parseInt(FirstN.getText());
         int count = nFirst < list.size() ? nFirst : list.size();
         Extreme extreme = list.get(0);
-        double val0 = extreme.value;
+        double val0 = mode ? extreme.value : extreme.diff;
         toLog(mode ? "По амплитуде" : "По спаду");
         toLog(String.format("Макс=%6.4f f=%6.4f гц",extreme.value,extreme.freq/KF100));
         double sum=0;
         for(int i=1; i<count;i++){
             extreme = list.get(i);
-            double proc = extreme.value*100/val0;
+            double proc = (mode ? extreme.value : extreme.diff)*100/val0;
             sum+=proc;
             toLog(String.format("Макс=%6.4f f=%6.4f гц %d%% к первому",extreme.value,extreme.freq/KF100,(int)proc));
             }

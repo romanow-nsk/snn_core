@@ -165,8 +165,8 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
         for(int i=nFirst+1;i<size-1-nLast;i++)
             if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1]){
                 int k1,k2;
-                for(k1=i;i>0 && sumT.data[k1]>sumT.data[k1-1];k1--);
-                for(k2=i;i<sumT.data.length-1 && sumT.data[k2]>sumT.data[k2+1];k2++);
+                for(k1=i;k1>0 && sumT.data[k1]>sumT.data[k1-1];k1--);
+                for(k2=i;k2<sumT.data.length-1 && sumT.data[k2]>sumT.data[k2+1];k2++);
                 double d1 = sumT.data[i]-sumT.data[k1];
                 double d2 = sumT.data[i]-sumT.data[k2];
                 double diff = Math.sqrt(d1*d1+d2*d2);
