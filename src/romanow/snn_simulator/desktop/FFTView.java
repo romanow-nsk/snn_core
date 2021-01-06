@@ -2088,7 +2088,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
 
     private void showExtrems(boolean mode){
         int sz = inputStat.getMids().length;
-        toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",100./sz*noFirstPoints,50./sz*(sz-noLastPoints)));
+        toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",50./sz*noFirstPoints,50./sz*(sz-noLastPoints)));
         ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirstPoints,noLastPoints);
         if (list.size()==0){
             toLog("Экстремумов не найдено");
@@ -2099,13 +2099,13 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         Extreme extreme = list.get(0);
         double val0 = mode ? extreme.value : extreme.diff;
         toLog(mode ? "По амплитуде" : "По спаду");
-        toLog(String.format("Макс=%6.4f f=%6.4f гц",extreme.value,extreme.freq/KF100));
+        toLog(String.format("Ампл=%6.4f Пик=%6.4f f=%6.4f гц",extreme.value,extreme.diff,extreme.freq/KF100));
         double sum=0;
         for(int i=1; i<count;i++){
             extreme = list.get(i);
             double proc = (mode ? extreme.value : extreme.diff)*100/val0;
             sum+=proc;
-            toLog(String.format("Макс=%6.4f f=%6.4f гц %d%% к первому",extreme.value,extreme.freq/KF100,(int)proc));
+            toLog(String.format("Ампл=%6.4f Пик=%6.4f f=%6.4f гц %d%%",extreme.value,extreme.diff,extreme.freq/KF100,(int)proc));
             }
         toLog(String.format("Средний - %d%% к первому",(int)(sum/(count-1))));
         }
