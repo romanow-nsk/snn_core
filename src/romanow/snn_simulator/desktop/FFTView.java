@@ -2089,7 +2089,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private void showExtrems(boolean mode){
         int sz = inputStat.getMids().length;
         toLog(String.format("Диапазон экстремумов: %6.4f-%6.4f",50./sz*noFirstPoints,50./sz*(sz-noLastPoints)));
-        ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirstPoints,noLastPoints);
+        ArrayList<Extreme> list = inputStat.createExtrems(mode,noFirstPoints,noLastPoints,false);
         if (list.size()==0){
             toLog("Экстремумов не найдено");
             return;

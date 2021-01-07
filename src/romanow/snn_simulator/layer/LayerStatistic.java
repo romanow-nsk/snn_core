@@ -160,7 +160,11 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
     public float getDiffT(){
         return getMid(getDiffsT());
         }
+
     public ArrayList<Extreme> createExtrems(boolean byLevel, int nFirst, int nLast){
+        return createExtrems(byLevel, nFirst, nLast,false);
+        }
+    public ArrayList<Extreme> createExtrems(boolean byLevel, int nFirst, int nLast,boolean ownSort){
         ArrayList<Extreme> out = new ArrayList<>();
         for(int i=nFirst+1;i<size-1-nLast;i++)
             if (sumT.data[i]>sumT.data[i-1] && sumT.data[i]>sumT.data[i+1]){
@@ -172,22 +176,38 @@ public class LayerStatistic implements I_TypeName,I_ObjectName,I_TextStream{
                 double diff = Math.sqrt((d1*d1+d2*d2)/2);
                 out.add(new Extreme(sumT.data[i]/count,(int)((i+1.0)* FFT.sizeHZ/2/size),diff/count));
                 }
-        if (byLevel)
-            out.sort(new Comparator<Extreme>() {
-                @Override
-                public int compare(Extreme o1, Extreme o2) {
-                    if (o1.value==o2.value) return 0;
-                    return o1.value > o2.value ? -1 : 1;
+        if (!ownSort){
+            if (byLevel)
+                out.sort(new Comparator<Extreme>() {
+                    @Override
+                    public int compare(Extreme o1, Extreme o2) {
+                        if (o1.value==o2.value) return 0;
+                        return o1.value > o2.value ? -1 : 1;
+                        }
+                    });
+            else
+                out.sort(new Comparator<Extreme>() {
+                    @Override
+                    public int compare(Extreme o1, Extreme o2) {
+                        if (o1.diff==o2.diff) return 0;
+                        return o1.diff > o2.diff ? -1 : 1;
                     }
                 });
-        else
-            out.sort(new Comparator<Extreme>() {
-                @Override
-                public int compare(Extreme o1, Extreme o2) {
-                    if (o1.diff==o2.diff) return 0;
-                    return o1.diff > o2.diff ? -1 : 1;
+            }
+        else{
+            Extreme xx[]=new Extreme[out.size()];
+            out.toArray(xx);
+            for(int i=1;i<xx.length;i++){
+                for(int k=i; k>0 && (byLevel ? xx[k].value > xx[k-1].value : xx[k].diff > xx[k-1].diff);k--){
+                    Extreme cc = xx[k];
+                    xx[k] = xx[k-1];
+                    xx[k-1]=cc;
+                    }
                 }
-            });
+            out.clear();
+            for(Extreme ex : xx)
+                out.add(ex);
+            }
         return out;
         }
     //--------------------------------------------------------------------------
