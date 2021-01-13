@@ -378,13 +378,23 @@ public class FFT implements FFTBinStream{
             int base=0;
             int lnt=0;
             tc.clear();
-            do  {
+            boolean lastStep=false;
+            do {
                 tc.fixTime();
-                for(int j=0;j<pars.W();j++){
-                    wave[j] = j<size ? fullWave[base+j] : 0;
+                if (base+pars.W()<=size){
+                    for(int j=0;j<pars.W();j++){
+                        wave[j] = fullWave[base+j];
+                        }
+                    base += nQuant;
+                    size -= nQuant;
                     }
-                base += nQuant;
-                size -= nQuant;
+                else{
+                    lastStep=true;
+                    base = size-pars.W();
+                    for(int j=0;j<pars.W();j++){
+                        wave[j] = fullWave[base+j];
+                        }
+                    }
                 tc.addCount(0);
                 fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
                 tc.addCount(1);
@@ -408,7 +418,7 @@ public class FFT implements FFTBinStream{
                     break;
                 tc.addCountTotal(7);
                 totalMS += stepMS;
-                } while(size>0);
+                } while (!lastStep);
             back.onMessage("Блоков "+nblock);
             back.onMessage(tc.toString());
             close(back);
