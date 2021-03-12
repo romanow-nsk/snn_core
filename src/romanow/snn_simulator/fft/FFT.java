@@ -16,6 +16,11 @@ import romanow.snn_simulator.gammatone.GPUFiltersKernel;
 import romanow.snn_simulator.gammatone.GPUGTFilterBank;
  
 public class FFT implements FFTBinStream{
+    public final static int WinModeRectangle=0;     // Прямоугольное окно
+    public final static int WinModeTriangle=1;      // Треугольное окно
+    public final static int WinModeSine=2;          // Синусное окно
+    public final static int WinModeWelch=3;         // Параболическое окно
+    //--------------------------------------------------------------------------
     public final static int formatVersion=1;        // Версия формата
     public final static String formatSignature="CASA Spectrums Binary Data";
     public final static double Ccontr = 32.703;     // Частота до контр-октавы
@@ -35,10 +40,10 @@ public class FFT implements FFTBinStream{
     private boolean preloadMode=false;              // Режим предварительной загрузки
     //------------ текущие спектры и волны -------------------------------------
     private int nblock=0;                           // Индекс спектра (шаг модели)
-    private float wave[]=null;                     // Текущая волна
-    private FFTArray spectrum=null;                // Текущий спектр
-    private FFTArray logSpectrum=null;             // Спектр октавный (логарифмический диапазон)
-    private FFTArray gammaTones=null;              // Кохлеаграмма =ПОКА 1 значение
+    private float wave[]=null;                      // Текущая волна
+    private FFTArray spectrum=null;                 // Текущий спектр
+    private FFTArray logSpectrum=null;              // Спектр октавный (логарифмический диапазон)
+    private FFTArray gammaTones=null;               // Кохлеаграмма =ПОКА 1 значение
     private FFTArray GTSpectrum=null;
     private FFTArray GTSpectrumList[]=null;         // preload кохлеограмма
     private FFTArray logSpectrumList[]=null;        // preload спектр
@@ -209,21 +214,6 @@ public class FFT implements FFTBinStream{
     public String fullGPUInfo(){
         return new GPU(true).fullGPUInfo();
         }
-    /*
-    public void setFFTParams(int W, int procOver, boolean logFreqMode, 
-        int subToneCount, boolean p_Cohleogram, boolean p_GPU, boolean FFTWindowReduce,int GPUmode){
-        this.GPUmode = GPUmode;
-        this.FFTWindowReduce = FFTWindowReduce;
-        this.W = W;
-        this.procOver = procOver;
-        calcFFTParams();
-        this.logFreqMode= logFreqMode;
-        this.subToneCount = subToneCount;
-        this.p_Cohleogram = p_Cohleogram;
-        gpu = new GPU(p_GPU);
-        gpu.printGPUInfo();
-        }
-    */
     public int getLogSpectrumSize(){
         return Octaves*12*pars.subToneCount();
         }
@@ -304,7 +294,7 @@ public class FFT implements FFTBinStream{
             wave = new float[pars.W()];
             for(int i=0, base=0; i<sz; i++, base+=nQuant){
                 for(int j=0;j<pars.W();j++){
-                    wave[j] = base+j<fullWave.length ? fullWave[base+j] : 0;
+                    wave[j] = (float)winFun(base+j<fullWave.length ? fullWave[base+j] : 0,j);
                     }
                 filterBank.procCohleogramm(wave, pars.procOver(),gpu);
                 GTSpectrum  = filterBank.getGTSpectrum();
@@ -338,18 +328,30 @@ public class FFT implements FFTBinStream{
             spectrum = new FFTArray(wave.length/2);
             logSpectrum=new FFTArray(toneIndexes.length);
             for(int j=0;j<pars.W();j++){
-                wave[j] = base+j<fullWave.length ? fullWave[base+j] : 0;
+                wave[j] = (float)winFun(base+j<fullWave.length ? fullWave[base+j] : 0,j);
                 }
-            fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
+            fftDirectStandart(pars.FFTWindowReduce());  // Переменный (фикс.) размер окна
             spectrum.compress(compressMode,compressGrade,kAmpl);
             convertToLog(true);                 // Линейный/триангулярный
-            //spectrum.nextStep();                // ?????????
+            //spectrum.nextStep();                      // ?????????
             logSpectrumList[i] = logSpectrum;
             if (i%dd==0)
                 back.onMessage(""+i*100/sz+"%");
             }
         tc.addCount(0);
         back.onMessage(tc.toString());
+        }
+    //------------------------------ Функция окна -----------------------------
+    private double winFun(double val, int idx){
+        double sz = pars.W();
+        switch (pars.winMode()){
+            case WinModeRectangle: return val;
+            case WinModeTriangle: return val*(1-Math.abs((idx-sz/2)/(sz/2)));
+            case WinModeWelch:    double dd= Math.abs((idx-sz/2)/(sz/2));
+                                  return val*(1-dd*dd);
+            case WinModeSine:     return val*Math.sin(Math.PI*idx/sz);
+            }
+         return val;
         }
     //--------------------------------------------------------------------------
     private TimeCounter tc = 
@@ -383,7 +385,7 @@ public class FFT implements FFTBinStream{
                 tc.fixTime();
                 if (base+pars.W()<=size){
                     for(int j=0;j<pars.W();j++){
-                        wave[j] = fullWave[base+j];
+                        wave[j] = (float) winFun(fullWave[base+j],j);
                         }
                     base += nQuant;
                     size -= nQuant;
@@ -392,7 +394,7 @@ public class FFT implements FFTBinStream{
                     lastStep=true;
                     base = size-pars.W();
                     for(int j=0;j<pars.W();j++){
-                        wave[j] = fullWave[base+j];
+                        wave[j] = (float) winFun(fullWave[base+j],j);
                         }
                     }
                 tc.addCount(0);
@@ -695,6 +697,10 @@ public class FFT implements FFTBinStream{
         binConvert(params,fspec,emptyCallBack);
         }
     public void binConvert(FFTParams params,String fspec, FFTCallBack emptyCallBack){
+        waveLoad(params,fspec,emptyCallBack);
+        binSave(fspec,emptyCallBack);
+        }
+    public void waveLoad(FFTParams params,String fspec, FFTCallBack emptyCallBack){
         FFTAudioFile audioFile = new FFTAudioFile();
         if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fspec,44100, emptyCallBack))
             return;
@@ -703,10 +709,7 @@ public class FFT implements FFTBinStream{
             return;
         preloadFullSpectrum(false,audioFile,emptyCallBack);
         preloadFullCohleogramm(false,audioFile,emptyCallBack);
-        binSave(fspec,emptyCallBack);
         }
-
-
     //--------------- Конвертированный через preload ------------------------------------
     public void binSave(String fspec){
         binSave(fspec,emptyCallBack);

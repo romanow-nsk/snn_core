@@ -23,6 +23,7 @@ public class FFTParams implements FFTBinStream{
     private double  F_SCALE=3.0;           // Коэффициент перемножения спектр*гамматон
     private boolean p_Cohleogram;          // Наличие кохлеограммы
     private boolean p_GPU;                 // GPU включен
+    private int winMode=FFT.WinModeRectangle; // Вид функции окна
     public FFTParams(int W, int procOver, boolean logFreqMode,
         int subToneCount, boolean p_Cohleogram, boolean p_GPU, 
         boolean FFTWindowReduce,int GPUmode, double f_SCALE){
@@ -35,6 +36,49 @@ public class FFTParams implements FFTBinStream{
         this.p_Cohleogram = p_Cohleogram;
         this.p_GPU = p_GPU;
         F_SCALE = f_SCALE;
+        }
+    public FFTParams procOver(int procOver0){
+        procOver = procOver0;
+        return this;
+        }
+    public FFTParams W(int W0){
+        W = W0;
+        return this;
+        }
+    public FFTParams logFreqMode(boolean logFreqMode0){
+        logFreqMode = logFreqMode0;
+        return this;
+        }
+    public FFTParams subToneCount(int subToneCount0){
+        subToneCount = subToneCount0;
+        return this;
+        }
+    public FFTParams p_Cohleogram(boolean p_Cohleogram0){
+        p_Cohleogram = p_Cohleogram0;
+        return this;
+        }
+    public FFTParams FFTWindowReduce(boolean FFTWindowReduce0){
+        FFTWindowReduce = FFTWindowReduce0;
+        return this;
+        }
+    public FFTParams p_GPU(boolean p_GPU0){
+        p_GPU = p_GPU0;
+        return this;
+    }
+    public FFTParams f_SCALE(double f_SCALE0){
+        F_SCALE = f_SCALE0;
+        return this;
+        }
+    public FFTParams winMode(int winMode0){
+        winMode = winMode0;
+        return this;
+        }
+    public FFTParams GPUMode(int GPUMode0){
+        GPUmode = GPUMode0;
+        return this;
+        }
+    public int winMode(){
+        return winMode;
         }
     public FFTParams(int W, int procOver, int subToneCount, boolean FFTWindowReduce){
         GPUmode = 0;
@@ -67,6 +111,7 @@ public class FFTParams implements FFTBinStream{
         p_Cohleogram=in.readBoolean();
         p_GPU=in.readBoolean();
         F_SCALE=in.readDouble();
+        winMode=in.readInt();
         }
 
     @Override
@@ -80,6 +125,7 @@ public class FFTParams implements FFTBinStream{
         out.writeBoolean(p_Cohleogram);
         out.writeBoolean(p_GPU);
         out.writeDouble(F_SCALE);
+        out.writeInt(winMode);
         }
 
     public int GPUmode() {
