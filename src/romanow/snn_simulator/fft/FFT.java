@@ -322,7 +322,7 @@ public class FFT implements FFTBinStream{
         back.onMessage("Отсчетов спектра:"+sz);
         TimeCounter tc = new TimeCounter("Конвертация спектра");
         int dd = sz/10;
-        for(int i=0, base=0; i<logSpectrumList.length; i++, base+=nQuant){
+        for(int i=0, base=0; i<sz; i++, base+=nQuant){
             spectrum = new FFTArray(wave.length/2);
             logSpectrum=new FFTArray(toneIndexes.length);
             for(int j=0;j<pars.W();j++){
@@ -372,30 +372,18 @@ public class FFT implements FFTBinStream{
         spectrum = new FFTArray(wave.length/2);
         logSpectrum=new FFTArray(toneIndexes.length);
         nblock=0;
-        int size = fullWave.length;
         int nQuant = pars.W()*(100-pars.procOver())/100;
+        int sz = fullWave.length/nQuant;
         try {
             int read=0;
-            int i=0;
-            int base=0;
             int lnt=0;
             tc.clear();
-            boolean lastStep=false;
-            do {
+            for(int i=0, base=0; i<sz; i++, base+=nQuant){
+                spectrum = new FFTArray(wave.length/2);
+                logSpectrum=new FFTArray(toneIndexes.length);
                 tc.fixTime();
-                if (base+pars.W()<=size){
-                    for(int j=0;j<pars.W();j++){
-                        wave[j] = (float) winFun(fullWave[base+j],j);
-                        }
-                    base += nQuant;
-                    size -= nQuant;
-                    }
-                else{
-                    lastStep=true;
-                    base = size-pars.W();
-                    for(int j=0;j<pars.W();j++){
-                        wave[j] = (float) winFun(fullWave[base+j],j);
-                        }
+                for(int j=0;j<pars.W();j++){
+                    wave[j] = (float)winFun(base+j<fullWave.length ? fullWave[base+j] : 0,j);
                     }
                 tc.addCount(0);
                 fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
@@ -420,7 +408,7 @@ public class FFT implements FFTBinStream{
                     break;
                 tc.addCountTotal(7);
                 totalMS += stepMS;
-                } while (!lastStep);
+                }
             back.onMessage("Блоков "+nblock);
             back.onMessage(tc.toString());
             close(back);
