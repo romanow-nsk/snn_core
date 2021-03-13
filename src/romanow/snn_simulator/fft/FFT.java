@@ -928,9 +928,11 @@ public class FFT implements FFTBinStream{
     //-----------------------------------------------------------------------
     public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
-        FFTParams params = new FFTParams().W(1024*16).subToneCount(2).procOver(90).
-                FFTWindowReduce(false).p_Cohleogram(false).compressMode(true).compressGrade(1).kAmpl(10);
-        fft.waveLoad(params,"../Waves/BluesMono.wav");
+        FFTParams params = new FFTParams().W(1024*16).subToneCount(1).procOver(90).
+                FFTWindowReduce(false).p_Cohleogram(false).compressMode(false).compressGrade(1).kAmpl(1).
+                winMode(FFT.WinModeSine);
+                ;
+        fft.waveLoad(params,"../Waves/Tone 440 Sin 100-75-50-25-25.wav");
         //fft.binConvert(params,"../Waves/BluesMono.wav");
         //fft.binLoad("../Waves/BluesMono.mpx");
         //fft.binSave("../Waves/BluesMono2.mpx");
@@ -939,6 +941,7 @@ public class FFT implements FFTBinStream{
         for(int i=0; i<list.length;i++){
             FFTArray line = list[i];
             float ff[] = line.getOriginal();
+            System.out.print(i+": ");
             for(int j=0;j<ff.length;j++)
                 System.out.print(String.format("%5.3f ",ff[j]));
             System.out.println("");
