@@ -32,11 +32,9 @@ public class FFT implements FFTBinStream{
     private float totalMS=0;                        // Текущий момент времени
     private float stepMS;                           // Сдвиг окна (мс)
     private float countGTF;                         // Шагов гамматон-фильтра
-    private float compressGrade=0;                  // Степень компрессии
-    private boolean compressMode=false;
-    private float kAmpl=1;                          // Ампл. компрессии
+
     private GPU gpu=null;
-    private FFTParams pars = null;
+    private FFTParams pars = new FFTParams();       //
     private boolean preloadMode=false;              // Режим предварительной загрузки
     //------------ текущие спектры и волны -------------------------------------
     private int nblock=0;                           // Индекс спектра (шаг модели)
@@ -58,7 +56,7 @@ public class FFT implements FFTBinStream{
     private final static String noteList[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     public String toString(){
         return pars.toString()+"\nШаг лин.спектра (гц)="+stepHZLinear+"\nСдвиг окна (мс)="+stepMS+
-                "\nКомпрессия="+compressMode+"\nСтепень компрессии="+compressGrade+"\nАмпл. компрессии="+kAmpl+
+                "\nКомпрессия="+pars.compressMode()+"\nСтепень компрессии="+pars.compressGrade()+"\nАмпл. компрессии="+pars.kAmpl()+
                 "\nГраничная нота="+getFirstValidNote()+"\nОтсчетов="+nblock+"\nВремя звучания (с)="+(int)(totalMS/1000);
         }
     public static int pow2(int v){
@@ -132,16 +130,16 @@ public class FFT implements FFTBinStream{
         return audioInputStream;
         }
     public void setCompressGrade(float compressGrade) {
-        this.compressGrade = compressGrade;
+        pars.compressGrade(compressGrade);
         }
     public void setCompressMode(boolean compressMode) {
-        this.compressMode = compressMode;
+        pars.compressMode(compressMode);
         }
     public void clearMaxAmpl() {
         spectrum.clearMax();
         }
     public void setKAmpl(float vv){
-        kAmpl = vv;
+        pars.kAmpl(vv);
         }
     public float getMaxAmpl() {
         return spectrum.getMax();
@@ -288,7 +286,7 @@ public class FFT implements FFTBinStream{
             GPUFiltersKernel gpuFilter = new GPUFiltersKernel();
             GTSpectrumList = gpuFilter.execute(filterBank.getFilterBank(),fullWave,nQuant,sz,pars.GPUmode());
             for(int i=0;i<sz;i++)
-                GTSpectrumList[i].compress(compressMode, compressGrade,kAmpl);
+                GTSpectrumList[i].compress(pars.compressMode(), pars.compressGrade(),pars.kAmpl());
             }
         else{
             wave = new float[pars.W()];
@@ -298,7 +296,7 @@ public class FFT implements FFTBinStream{
                     }
                 filterBank.procCohleogramm(wave, pars.procOver(),gpu);
                 GTSpectrum  = filterBank.getGTSpectrum();
-                GTSpectrum.compress(compressMode, compressGrade,kAmpl);
+                GTSpectrum.compress(pars.compressMode(), pars.compressGrade(),pars.kAmpl());
                 GTSpectrumList[i] = GTSpectrum;
                 if (i%dd==0)
                     back.onMessage(""+i*100/sz+"%");
@@ -323,7 +321,7 @@ public class FFT implements FFTBinStream{
         wave = new float[pars.W()];
         back.onMessage("Отсчетов спектра:"+sz);
         TimeCounter tc = new TimeCounter("Конвертация спектра");
-        int dd = sz/20;
+        int dd = sz/10;
         for(int i=0, base=0; i<logSpectrumList.length; i++, base+=nQuant){
             spectrum = new FFTArray(wave.length/2);
             logSpectrum=new FFTArray(toneIndexes.length);
@@ -331,13 +329,15 @@ public class FFT implements FFTBinStream{
                 wave[j] = (float)winFun(base+j<fullWave.length ? fullWave[base+j] : 0,j);
                 }
             fftDirectStandart(pars.FFTWindowReduce());  // Переменный (фикс.) размер окна
-            spectrum.compress(compressMode,compressGrade,kAmpl);
+            spectrum.compress(pars.compressMode(), pars.compressGrade(),pars.kAmpl());
             convertToLog(true);                 // Линейный/триангулярный
             //spectrum.nextStep();                      // ?????????
             logSpectrumList[i] = logSpectrum;
             if (i%dd==0)
                 back.onMessage(""+i*100/sz+"%");
             }
+        totalMS = stepMS * logSpectrumList.length;
+        nblock = logSpectrumList.length;
         tc.addCount(0);
         back.onMessage(tc.toString());
         }
@@ -400,7 +400,7 @@ public class FFT implements FFTBinStream{
                 tc.addCount(0);
                 fftDirectStandart(pars.FFTWindowReduce()); // Переменный (фикс.) размер окна
                 tc.addCount(1);
-                spectrum.compress(compressMode,compressGrade,kAmpl);
+                spectrum.compress(pars.compressMode(), pars.compressGrade(),pars.kAmpl());
                 tc.addCount(2);
                 convertToLog(true);                 // Линейный/триангулярный
                 tc.addCount(3);
@@ -408,7 +408,7 @@ public class FFT implements FFTBinStream{
                     filterBank.procCohleogramm(wave, pars.procOver(),gpu);
                     GTSpectrum  = filterBank.getGTSpectrum();
                     tc.addCount(4);
-                    GTSpectrum.compress(compressMode, compressGrade,kAmpl);
+                    GTSpectrum.compress(pars.compressMode(), pars.compressGrade(),pars.kAmpl());
                     tc.addCount(2);
                     }
                 tc.addCount(4);
@@ -679,8 +679,7 @@ public class FFT implements FFTBinStream{
         return out;
         }
 
-
-    public static FFTCallBack emptyCallBack = new FFTCallBack() {
+    public FFTCallBack emptyCallBack = new FFTCallBack() {
         @Override
         public void onMessage(String mes) { System.out.println(mes); }
         @Override
@@ -696,19 +695,23 @@ public class FFT implements FFTBinStream{
     public void binConvert(FFTParams params,String fspec){
         binConvert(params,fspec,emptyCallBack);
         }
-    public void binConvert(FFTParams params,String fspec, FFTCallBack emptyCallBack){
-        waveLoad(params,fspec,emptyCallBack);
-        binSave(fspec,emptyCallBack);
+    public void binConvert(FFTParams params,String fspec, FFTCallBack callBack){
+        waveLoad(params,fspec,callBack);
+        binSave(fspec,callBack);
         }
-    public void waveLoad(FFTParams params,String fspec, FFTCallBack emptyCallBack){
+    public void waveLoad(FFTParams params,String fspec){
+        waveLoad(params,fspec,emptyCallBack);
+        }
+    public void waveLoad(FFTParams params,String fspec, FFTCallBack callBack){
         FFTAudioFile audioFile = new FFTAudioFile();
-        if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fspec,44100, emptyCallBack))
+        if (!audioFile.testAndOpenFile(FFTAudioFile.OpenAndPlay,fspec,44100, callBack))
             return;
         setFFTParams(params);
-        if (!preloadWave(audioFile,emptyCallBack))
+        if (!preloadWave(audioFile,callBack))
             return;
-        preloadFullSpectrum(false,audioFile,emptyCallBack);
-        preloadFullCohleogramm(false,audioFile,emptyCallBack);
+        preloadFullSpectrum(false,audioFile,callBack);
+        if (params.p_Cohleogram())
+            preloadFullCohleogramm(false,audioFile,callBack);
         }
     //--------------- Конвертированный через preload ------------------------------------
     public void binSave(String fspec){
@@ -863,9 +866,6 @@ public class FFT implements FFTBinStream{
         pars.load(in,currentFormatVersion);
         stepHZLinear = in.readFloat();                    // Дискретность частоты
         stepMS = in.readFloat();                          // Шаг оцифровки спектра
-        compressGrade = in.readFloat();
-        compressMode = in.readBoolean();
-        kAmpl = in.readFloat();
         pars = new FFTParams();
         pars.load(in,currentFormatVersion);
         toneIndexes = new int [in.readInt()];
@@ -914,24 +914,35 @@ public class FFT implements FFTBinStream{
         out.writeUTF(formatSignature);
         out.writeInt(formatVersion);
         pars.save(out);
-        out.writeFloat(stepHZLinear);                    // Дискретность частоты
+        out.writeFloat(stepHZLinear);                  // Дискретность частоты
         out.writeFloat(stepMS);                        // Шаг оцифровки спектра
-        out.writeFloat(compressGrade);
-        out.writeBoolean(compressMode);
-        out.writeFloat(kAmpl);
         pars.save(out);
         out.writeInt(toneIndexes.length);
         for(int vv: toneIndexes)
             out.writeInt(vv);
-    }
+        }
+    public FFTArray[] getLogSpectrumList() {
+        return logSpectrumList;
+        }
+
     //-----------------------------------------------------------------------
     public static void main(String argv[]) throws IOException{
         FFT fft = new FFT();
-        FFTParams params = new FFTParams(1024*16,80,2,false);
-        fft.binConvert(params,"../Waves/BluesMono.wav");
-        fft.binLoad("../Waves/BluesMono.mpx");
-        fft.binSave("../Waves/BluesMono2.mpx");
+        FFTParams params = new FFTParams().W(1024*16).subToneCount(2).procOver(90).
+                FFTWindowReduce(false).p_Cohleogram(false).compressMode(true).compressGrade(1).kAmpl(10);
+        fft.waveLoad(params,"../Waves/BluesMono.wav");
+        //fft.binConvert(params,"../Waves/BluesMono.wav");
+        //fft.binLoad("../Waves/BluesMono.mpx");
+        //fft.binSave("../Waves/BluesMono2.mpx");
         System.out.println(fft.toString());
-    }
+        FFTArray list[] = fft.getLogSpectrumList();
+        for(int i=0; i<list.length;i++){
+            FFTArray line = list[i];
+            float ff[] = line.getOriginal();
+            for(int j=0;j<ff.length;j++)
+                System.out.print(String.format("%5.3f ",ff[j]));
+            System.out.println("");
+            }
+        }
 
 }

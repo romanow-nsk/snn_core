@@ -15,15 +15,18 @@ import java.io.IOException;
  */
 public class FFTParams implements FFTBinStream{
     private int GPUmode;                   // Вид режима GPU
-    private boolean FFTWindowReduce;       // Укорочение интервалов для высоких частот по октавам
-    private int W;                         // Ширина окна (отсчетов)
-    private int procOver;                  // Процент перекрытия двух соседних окон
-    private boolean logFreqMode;           // Октавный режим (true)
-    private int subToneCount;              // Частот в полутоне
+    private boolean FFTWindowReduce=true;  // Укорочение интервалов для высоких частот по октавам
+    private int W=1024;                    // Ширина окна (отсчетов)
+    private int procOver=75;               // Процент перекрытия двух соседних окон
+    private boolean logFreqMode=true;      // Октавный режим (true)
+    private int subToneCount=2;            // Частот в полутоне
     private double  F_SCALE=3.0;           // Коэффициент перемножения спектр*гамматон
-    private boolean p_Cohleogram;          // Наличие кохлеограммы
-    private boolean p_GPU;                 // GPU включен
+    private boolean p_Cohleogram=false;    // Наличие кохлеограммы
+    private boolean p_GPU=false;           // GPU включен
     private int winMode=FFT.WinModeRectangle; // Вид функции окна
+    private float compressGrade=0;         // Степень компрессии
+    private boolean compressMode=false;
+    private float kAmpl=1;                 // Ампл. компрессии
     public FFTParams(int W, int procOver, boolean logFreqMode,
         int subToneCount, boolean p_Cohleogram, boolean p_GPU, 
         boolean FFTWindowReduce,int GPUmode, double f_SCALE){
@@ -64,9 +67,21 @@ public class FFTParams implements FFTBinStream{
     public FFTParams p_GPU(boolean p_GPU0){
         p_GPU = p_GPU0;
         return this;
-    }
+        }
+    public FFTParams compressMode(boolean compressMode0){
+        compressMode = compressMode0;
+        return this;
+        }
+    public FFTParams compressGrade(float compressGrade0){
+        compressGrade = compressGrade0;
+        return this;
+        }
     public FFTParams f_SCALE(double f_SCALE0){
         F_SCALE = f_SCALE0;
+        return this;
+        }
+    public FFTParams kAmpl(float kAmpl0){
+        kAmpl = kAmpl0;
         return this;
         }
     public FFTParams winMode(int winMode0){
@@ -77,6 +92,7 @@ public class FFTParams implements FFTBinStream{
         GPUmode = GPUMode0;
         return this;
         }
+    public float kAmpl(){ return kAmpl; }
     public int winMode(){
         return winMode;
         }
@@ -93,9 +109,12 @@ public class FFTParams implements FFTBinStream{
     public String toString(){
         return "Укорочение интервалов ВЧ="+FFTWindowReduce+"\nШирина окна="+W+
                 "\nПроцент перекрытия="+procOver+"\nОктавный режим="+logFreqMode+"\nЧастот в полутоне="+subToneCount+
-                "\nНаличие кохлеограммы="+p_Cohleogram;
+                "\nНаличие кохлеограммы="+p_Cohleogram+"\nКомпрессия "+(compressMode ? ("+\nУровень="+compressGrade+"\nАмплитуда="+kAmpl) : "-");
         }
-
+    public float compressGrade() {
+        return compressGrade; }
+    public boolean compressMode() {
+        return compressMode; }
     public double F_SCALE() {
         return F_SCALE;
         }
@@ -112,6 +131,9 @@ public class FFTParams implements FFTBinStream{
         p_GPU=in.readBoolean();
         F_SCALE=in.readDouble();
         winMode=in.readInt();
+        compressMode=in.readBoolean();
+        compressGrade=in.readFloat();
+        kAmpl=in.readFloat();
         }
 
     @Override
@@ -126,6 +148,9 @@ public class FFTParams implements FFTBinStream{
         out.writeBoolean(p_GPU);
         out.writeDouble(F_SCALE);
         out.writeInt(winMode);
+        out.writeBoolean(compressMode);
+        out.writeFloat(compressGrade);
+        out.writeFloat(kAmpl);
         }
 
     public int GPUmode() {

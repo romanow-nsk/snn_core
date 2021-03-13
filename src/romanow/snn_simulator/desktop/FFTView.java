@@ -574,6 +574,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         NTrendPoints = new javax.swing.JTextField();
         WinMode = new java.awt.Choice();
         jLabel25 = new javax.swing.JLabel();
+        KAmpl2 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         LoadModel = new javax.swing.JMenuItem();
@@ -1045,6 +1046,10 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         jLabel25.setText("Функция окна");
         getContentPane().add(jLabel25);
         jLabel25.setBounds(20, 270, 110, 14);
+
+        KAmpl2.setText("15");
+        getContentPane().add(KAmpl2);
+        KAmpl2.setBounds(10, 220, 50, 25);
 
         jMenu2.setText("Модель");
 
@@ -1800,7 +1805,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         kAmpl = (float)(Ampl.getValue()/500.);
         if (kAmpl>1)
             kAmpl = (float)(Math.exp(kAmpl)/Math.E);
-        toLog("KAmpl="+kAmpl);
+        KAmpl2.setText(String.format("%5.3f", kAmpl));
         fft.setKAmpl(kAmpl);
     }//GEN-LAST:event_AmplStateChanged
 
@@ -2253,6 +2258,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     private javax.swing.JMenuItem InfoGPU;
     private javax.swing.JButton InputStatistic;
     private javax.swing.JSlider KAmpl;
+    private javax.swing.JTextField KAmpl2;
     private javax.swing.JTextField KCompress;
     private javax.swing.JTextField KMultiple;
     private javax.swing.JTextField KSmooth;
