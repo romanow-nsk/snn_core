@@ -919,7 +919,6 @@ public class FFT implements FFTBinStream{
         FFTParams params = new FFTParams().W(1024*16).subToneCount(1).procOver(90).
                 FFTWindowReduce(false).p_Cohleogram(false).compressMode(false).compressGrade(1).kAmpl(1).
                 winMode(FFT.WinModeSine);
-                ;
         fft.waveLoad(params,"../Waves/Tone 440 Sin 100-75-50-25-25.wav");
         //fft.binConvert(params,"../Waves/BluesMono.wav");
         //fft.binLoad("../Waves/BluesMono.mpx");
