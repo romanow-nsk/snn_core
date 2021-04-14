@@ -20,6 +20,13 @@ public class FFT implements FFTBinStream{
     public final static int WinModeTriangle=1;      // Треугольное окно
     public final static int WinModeSine=2;          // Синусное окно
     public final static int WinModeWelch=3;         // Параболическое окно
+    public final static ArrayList<String> winFuncList=new ArrayList<>();
+        {
+        winFuncList.add("Прямоугольник");
+        winFuncList.add("Треугольник");
+        winFuncList.add("Синус");
+        winFuncList.add("Парабола");
+        }
     //--------------------------------------------------------------------------
     public final static int formatVersion=1;        // Версия формата
     public final static String formatSignature="CASA Spectrums Binary Data";
@@ -129,17 +136,8 @@ public class FFT implements FFTBinStream{
     public FFTAudioSource getAudioInputStream() {
         return audioInputStream;
         }
-    public void setCompressGrade(float compressGrade) {
-        pars.compressGrade(compressGrade);
-        }
-    public void setCompressMode(boolean compressMode) {
-        pars.compressMode(compressMode);
-        }
     public void clearMaxAmpl() {
         spectrum.clearMax();
-        }
-    public void setKAmpl(float vv){
-        pars.kAmpl(vv);
         }
     public float getMaxAmpl() {
         return spectrum.getMax();
@@ -173,9 +171,6 @@ public class FFT implements FFTBinStream{
         }
     public boolean isLogFreqMode() {
         return pars.logFreqMode();
-        }
-    public void setLogFreqMode(boolean mode) {
-        pars.setLogFreqMode(mode);
         }
     public FFTParams getParams(){
         return pars;

@@ -18,18 +18,18 @@ import javax.sound.sampled.AudioSystem;
  * @author romanow
  */
 public class FFTAudioTextFile implements FFTFileSource{
-    private String fspec=null;
-    private BufferedReader AudioFile=null;
-    private int sz=0;
-    private float data[]=null;
-    private int cnum;
-    private int nPoints=0;             // Количество точек для удаления тренда
-
+    protected String fspec=null;
+    protected int sz=0;
+    protected float data[]=null;
+    protected int nPoints=0;             // Количество точек для удаления тренда
+    //--------------------------------------------------------------------------------------
+    private transient int cnum;
+    private transient BufferedReader AudioFile=null;
+    //---------------------------------------------------------------------------------------
     public void setnPoints(int nPoints) {
         this.nPoints = nPoints; }
     @Override
-    public void enableToPlay(boolean play) {
-        }
+    public void enableToPlay(boolean play) {}
     @Override
     public boolean isPlaying(){
         return false;

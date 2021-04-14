@@ -1508,9 +1508,10 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
                         M3.setText("" + nBlock);
                         Time.setText("" + (int) totalMS);
                         MaxAmpl.setText("" + fft.getMaxAmpl());
-                        fft.setLogFreqMode(p_LogFreq);
-                        fft.setCompressMode(p_Compress);
-                        fft.setCompressGrade(Integer.parseInt(KCompress.getText()));
+                        FFTParams params = fft.getParams();
+                        params.logFreqMode(p_LogFreq);
+                        params.compressMode(p_Compress);
+                        params.compressGrade(Integer.parseInt(KCompress.getText()));
                         if (p_RealTime) {
                             try {
                                 //---------- Задержа от плейера или вычисляемая
@@ -1806,7 +1807,7 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
         if (kAmpl>1)
             kAmpl = (float)(Math.exp(kAmpl)/Math.E);
         KAmpl2.setText(String.format("%5.3f", kAmpl));
-        fft.setKAmpl(kAmpl);
+        fft.getParams().kAmpl(kAmpl);
     }//GEN-LAST:event_AmplStateChanged
 
     private void SettingGPUItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_SettingGPUItemStateChanged
