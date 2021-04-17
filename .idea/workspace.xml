@@ -8,6 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/Extreme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/Extreme.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -340,7 +341,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618646938934</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Косяк с максимумом частоты">
+      <created>1618648699612</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1618648699612</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -371,10 +379,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1615656063635" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1618646935920">
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1618648697627">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1618646935920" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1618648697627" />
     <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1610180814188">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -411,14 +419,14 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1618646946306">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1618648701405">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1618646946306" />
-    <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1610082648486">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1618648701405" />
+    <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1618650979964">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="507" y="196" width="585" height="478" key="find.popup/0.0.1600.870@0.0.1600.870" timestamp="1610082648486" />
+    <state x="507" y="196" width="585" height="478" key="find.popup/0.0.1600.870@0.0.1600.870" timestamp="1618650979964" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
