@@ -8,10 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nbproject/private/private.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/private/private.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/FFTView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/fft/FFTAudioTextFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -329,7 +326,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615658609825</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Окно спектрораммы">
+      <created>1618385687346</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1618385687346</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -363,10 +367,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1615656063635" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1615658606134">
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1618385680997">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1615658606134" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1618385680997" />
     <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1610180814188">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -403,14 +407,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state x="280" y="12" key="SettingsEditor" timestamp="1609741700948">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1618385692394">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="280" y="12" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1609741700948" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1615658611866">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1615658611866" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1618385692394" />
     <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1610082648486">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
