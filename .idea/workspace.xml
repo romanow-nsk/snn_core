@@ -6,9 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -353,7 +351,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618653539754</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Косяк с максимумом частоты">
+      <created>1619354579564</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1619354579564</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -380,18 +385,18 @@
     <option name="LAST_COMMIT_MESSAGE" value="Косяк с максимумом частоты" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="392" y="95" key="#Notifications" timestamp="1619355042790">
+      <screen x="0" y="0" width="1600" height="870" />
+    </state>
+    <state x="392" y="95" key="#Notifications/0.0.1600.870@0.0.1600.870" timestamp="1619355042789" />
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1615656063635">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1615656063635" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1618653536524">
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1619355011177">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1618653536524" />
-    <state x="506" y="179" key="FileChooserDialogImpl" timestamp="1610180814188">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="506" y="179" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1610180814188" />
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1619355011177" />
     <state width="1556" height="156" key="GridCell.Tab.0.bottom" timestamp="1616216119896">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -424,10 +429,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1618653541430">
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1619354583166">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1618653541430" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1619354583166" />
     <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1618650979964">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
