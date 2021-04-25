@@ -6,7 +6,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="" />
+    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -358,7 +360,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619354579564</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Косяк с максимумом частоты">
+      <created>1619355058015</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1619355058015</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -393,10 +402,14 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1615656063635" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1619355011177">
+    <state x="480" y="173" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1619356255588">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1619355011177" />
+    <state x="480" y="173" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1600.870@0.0.1600.870" timestamp="1619356255588" />
+    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1619355054117">
+      <screen x="0" y="0" width="1600" height="870" />
+    </state>
+    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1619355054117" />
     <state width="1556" height="156" key="GridCell.Tab.0.bottom" timestamp="1616216119896">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -429,10 +442,14 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1619354583166">
+    <state x="303" y="66" key="SettingsEditor" timestamp="1619357337802">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1619354583166" />
+    <state x="303" y="66" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1619357337802" />
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1619355061991">
+      <screen x="0" y="0" width="1600" height="870" />
+    </state>
+    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1619355061991" />
     <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1618650979964">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
