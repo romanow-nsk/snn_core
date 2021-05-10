@@ -15,7 +15,7 @@ import romanow.snn_simulator.TypeFactory;
  *
  * @author romanow
  */
-public class BoxFactory<T extends I_Name>{
+public class BoxFactory<T extends I_Name>{ //666666666
     public interface BoxFactoryCallBack<T>{
         public void getSelected(T selectedItem);
         }

@@ -6,8 +6,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="">
+    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="Косяк с максимумом частоты">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/BoxFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/BoxFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="IgnoredFileRootStore">
     <option name="generatedRoots">
@@ -43,17 +45,17 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="D:/YandexDisk/Билеты,тесты/OneWayTicket" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="vcs.Mercurial" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
   <component name="RunManager" selected="Application.SpectrumScrollWindow">
     <configuration name="FFT" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -115,6 +117,7 @@
       </list>
     </option>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR,VISIBILITY_SORTER" />
   </component>
@@ -367,8 +370,27 @@
       <option name="project" value="LOCAL" />
       <updated>1619355058015</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Косяк с максимумом частоты">
+      <created>1619357500350</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1619357500350</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix0 on Git" />
@@ -392,68 +414,6 @@
     <MESSAGE value="Окно спектрораммы" />
     <MESSAGE value="Косяк с максимумом частоты" />
     <option name="LAST_COMMIT_MESSAGE" value="Косяк с максимумом частоты" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="392" y="95" key="#Notifications" timestamp="1619355042790">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="392" y="95" key="#Notifications/0.0.1600.870@0.0.1600.870" timestamp="1619355042789" />
-    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser" timestamp="1615656063635">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="605" y="143" key="#com.intellij.ide.util.MemberChooser/0.0.1600.870@0.0.1600.870" timestamp="1615656063635" />
-    <state x="480" y="173" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1619356255588">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="480" y="173" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1600.870@0.0.1600.870" timestamp="1619356255588" />
-    <state x="466" y="35" key="CommitChangelistDialog2" timestamp="1619355054117">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="466" y="35" key="CommitChangelistDialog2/0.0.1600.870@0.0.1600.870" timestamp="1619355054117" />
-    <state width="1556" height="156" key="GridCell.Tab.0.bottom" timestamp="1616216119896">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.bottom/0.0.1600.870@0.0.1600.870" timestamp="1616216119896" />
-    <state width="1556" height="156" key="GridCell.Tab.0.center" timestamp="1616216119896">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.center/0.0.1600.870@0.0.1600.870" timestamp="1616216119896" />
-    <state width="1556" height="156" key="GridCell.Tab.0.left" timestamp="1616216119896">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.left/0.0.1600.870@0.0.1600.870" timestamp="1616216119896" />
-    <state width="1556" height="156" key="GridCell.Tab.0.right" timestamp="1616216119896">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="156" key="GridCell.Tab.0.right/0.0.1600.870@0.0.1600.870" timestamp="1616216119896" />
-    <state width="1556" height="243" key="GridCell.Tab.1.bottom" timestamp="1615658708255">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.bottom/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state width="1556" height="243" key="GridCell.Tab.1.center" timestamp="1615658708255">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.center/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state width="1556" height="243" key="GridCell.Tab.1.left" timestamp="1615658708255">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.left/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state width="1556" height="243" key="GridCell.Tab.1.right" timestamp="1615658708255">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state width="1556" height="243" key="GridCell.Tab.1.right/0.0.1600.870@0.0.1600.870" timestamp="1615658708255" />
-    <state x="303" y="66" key="SettingsEditor" timestamp="1619357337802">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="303" y="66" key="SettingsEditor/0.0.1600.870@0.0.1600.870" timestamp="1619357337802" />
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2" timestamp="1619355061991">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="392" y="158" key="Vcs.Push.Dialog.v2/0.0.1600.870@0.0.1600.870" timestamp="1619355061991" />
-    <state x="507" y="196" width="585" height="478" key="find.popup" timestamp="1618650979964">
-      <screen x="0" y="0" width="1600" height="870" />
-    </state>
-    <state x="507" y="196" width="585" height="478" key="find.popup/0.0.1600.870@0.0.1600.870" timestamp="1618650979964" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
