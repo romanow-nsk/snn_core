@@ -98,7 +98,7 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
                 if (point.time<bb || point.time>bb+dySize)
                     continue;
                 int yy = dy * (point.time-bb);
-                int xx = dx * point.subTone;
+                int xx = dx * (point.subTone+1)+dx/2;
                 gg.setColor(point.color);
                 gg.fillRect(xx,yy, dx, dy);
                 }
