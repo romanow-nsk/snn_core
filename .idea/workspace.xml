@@ -6,9 +6,10 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="Косяк с максимумом частоты">
+    <list default="true" id="2b50fa5f-6c6b-4a85-81c6-b7e4ea35c00c" name="Default Changelist" comment="Тест">
+      <change afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/SpectrumPoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/BoxFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/BoxFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/SpectrumScrollWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/romanow/snn_simulator/desktop/SpectrumScrollWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +52,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="ToolWindowCommit.ShowToolbar" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -377,7 +379,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619357500350</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Тест">
+      <created>1620636796604</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1620636796604</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -413,7 +422,8 @@
     <MESSAGE value="Баг - play время" />
     <MESSAGE value="Окно спектрораммы" />
     <MESSAGE value="Косяк с максимумом частоты" />
-    <option name="LAST_COMMIT_MESSAGE" value="Косяк с максимумом частоты" />
+    <MESSAGE value="Тест" />
+    <option name="LAST_COMMIT_MESSAGE" value="Тест" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -442,16 +452,6 @@
           <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/layer/LayerStatistic.java</url>
           <line>206</line>
           <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/desktop/SpectrumScrollWindow.java</url>
-          <line>217</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/romanow/snn_simulator/desktop/SpectrumScrollWindow.java</url>
-          <line>221</line>
-          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

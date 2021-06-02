@@ -11,6 +11,7 @@ import romanow.snn_simulator.fft.FFTArray;
 import romanow.snn_simulator.fft.FFTParams;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -22,6 +23,7 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
     private int dy=1;
     private int dySize=0;
     private int maxScroll;
+    private ArrayList<SpectrumPoint> points = new ArrayList<>();
 
     public SpectrumScrollWindow(FFT data, boolean white0) {
         initComponents();
@@ -38,6 +40,9 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
         Bright.setMinimum(0);
         Bright.setMaximum(100);
         setVisible(true);
+        }
+    public void addPoint(SpectrumPoint point){
+        points.add(point);
         }
 
     @Override
@@ -88,6 +93,14 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
                     gg.setColor(new Color(val,val,val));
                     gg.fillRect(xx,yy, dx, dy);
                     }
+                }
+            for(SpectrumPoint point : points){
+                if (point.time<bb || point.time>bb+dySize)
+                    continue;
+                int yy = dy * (point.time-bb);
+                int xx = dx * point.subTone;
+                gg.setColor(point.color);
+                gg.fillRect(xx,yy, dx, dy);
                 }
             }
         }
@@ -280,6 +293,17 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 SpectrumScrollWindow xx = new SpectrumScrollWindow(fft,false);
+                FFTArray list[] = fft.getLogSpectrumList();
+                for(int i=0;i<list.length;i++){
+                    FFTArray array = list[i];
+                    int mx=0;
+                    for(int j=0;j<array.size();j++){
+                        if (array.get(j) > array.get(mx))
+                            mx = j;
+                        }
+                    xx.addPoint(new SpectrumPoint(mx,i,Color.GREEN));
+                }
+            xx.repaint();
             }
         });
     }
