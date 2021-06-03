@@ -16,8 +16,8 @@ import java.io.*;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
+import javax.swing.*;
+
 import romanow.snn_simulator.fft.FFT;
 import romanow.snn_simulator.fft.FFTAudioFile;
 import romanow.snn_simulator.fft.FFTAudioSource;
@@ -2161,8 +2161,8 @@ public class FFTView extends javax.swing.JFrame implements LayerWindowCallBack{
     }//GEN-LAST:event_WinModeItemStateChanged
 
 
-    public String getInputFileName(String title, final String defName, String defDir){
-        FileDialog dlg=new FileDialog(this,title,FileDialog.LOAD);
+    public static String getInputFileName(String title, final String defName, String defDir){
+        FileDialog dlg=new FileDialog(new JFrame(),title,FileDialog.LOAD);
         if (defDir!=null){
             dlg.setDirectory(defDir);
         }

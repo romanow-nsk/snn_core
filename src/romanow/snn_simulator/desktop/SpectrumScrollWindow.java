@@ -64,7 +64,7 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
             Graphics gg = SpectrumPanel.getGraphics();
             gg.setColor(white ? Color.white : Color.black);
             gg.fillRect(0, 0, ww-1, hh-1);
-            for(int cStep=0;cStep<dySize;cStep++){
+            for(int cStep=0;cStep<dySize && bb+cStep<list.length;cStep++){
                 float spikes[] = list[bb+cStep].getOriginal();
                 int xx = 5;
                 int subToneCount = fft.getParams().subToneCount();
@@ -287,7 +287,9 @@ public class SpectrumScrollWindow extends javax.swing.JFrame {
         FFTParams params = new FFTParams().W(1024*16).subToneCount(2).procOver(90).
                 FFTWindowReduce(false).p_Cohleogram(false).compressMode(true).compressGrade(2).kAmpl(1).
                 winMode(FFT.WinModeSine);
-        fft.waveLoad(params,"../Waves/WhenIm64.wav");
+        String path = FFTView.getInputFileName("Волна","*.wav",null);
+        fft.waveLoad(params,path);
+        //fft.waveLoad(params,"../Waves/WhenIm64.wav");
         System.out.println(fft);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
